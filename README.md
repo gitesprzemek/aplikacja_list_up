@@ -1,1 +1,1 @@
-# server_app
+# fajna aplikacja
