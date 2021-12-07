@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/bgc"
+    >
+
+    <EditText
+        android:id="@+id/polelogowania"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_action_user"
+        android:ems="10"
+        android:hint="login"
+        android:textColorHint="#FFECECEC"
+        android:inputType="textPersonName"
+        android:textColor="#ECECEC"
+        app:layout_constraintBottom_toTopOf="@+id/polehasla"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.916" />
+
+    <EditText
+
+        android:id="@+id/polehasla"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_action_passwd"
+        android:ems="10"
+        android:hint="password"
+        android:textColorHint="#FFECECEC"
+        android:inputType="textPassword"
+        android:textColor="#ECECEC"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/przycisklogowania"
+        android:layout_width="283dp"
+        android:layout_height="56dp"
+        android:text="logowanie"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/polehasla"
+        app:layout_constraintVertical_bias="0.214" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
