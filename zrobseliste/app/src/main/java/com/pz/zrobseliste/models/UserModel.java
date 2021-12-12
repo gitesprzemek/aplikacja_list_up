@@ -16,6 +16,12 @@ public class UserModel {
         this.email = name;
         this.password = password;
     }
+    public UserModel(String email, String password,String username) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+
+    }
 
     public String getEmail() {
         return email;
@@ -33,7 +39,11 @@ public class UserModel {
         this.password = password;
     }
 
-    public JSONObject toJSON(){
+    public String getUsername() { return username; }
+
+    public void setUsername(String username) { this.username = username; }
+
+    public JSONObject loginDatatoJSON(){
 
         JSONObject jsonObject = null;
 
@@ -47,4 +57,20 @@ public class UserModel {
 
         return jsonObject;
     }
+    public JSONObject registrationDatatoJSON(){
+
+        JSONObject jsonObject = null;
+
+        try {
+            jsonObject = new JSONObject()
+                    .put("email", this.getEmail())
+                    .put("username",this.getUsername())
+                    .put("password", this.getPassword());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject;
+    }
+
 }

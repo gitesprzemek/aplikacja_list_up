@@ -28,21 +28,21 @@ public class LoginScreen extends AppCompatActivity {
 
 
     public void onBtnLogClick(View view) {
-        TextView infozwrotne = findViewById(R.id.infozwrotne);
-        EditText polelogowania = findViewById(R.id.loginField);
-        EditText polehasla = findViewById(R.id.polehasla);
-        if(polelogowania.getText().toString().equals("przemek") && polehasla.getText().toString().equals("admin123") )
+        TextView informationView = findViewById(R.id.informationView);
+        EditText loginField = findViewById(R.id.loginField);
+        EditText passwordField = findViewById(R.id.passwordField);
+        if(loginField.getText().toString().equals("przemek") && passwordField.getText().toString().equals("admin123") )
         {
-            infozwrotne.setText("Logowanie udane");
+            informationView.setText("Logowanie udane");
         }
         else
         {
-            infozwrotne.setText("Logowanie nieudane");
+            informationView.setText("Logowanie nieudane");
         }
 
-        user.setEmail(polelogowania.getText().toString());
-        user.setPassword(polehasla.getText().toString());
-        System.out.println(user.toJSON().toString());
+        user.setEmail(loginField.getText().toString());
+        user.setPassword(passwordField.getText().toString());
+        System.out.println(user.loginDatatoJSON().toString());
 
     }
 
