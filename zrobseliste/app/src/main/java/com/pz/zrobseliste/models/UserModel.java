@@ -6,14 +6,15 @@ import org.json.JSONObject;
 public class UserModel {
 
     private String email;
+    private String username;
     private String password;
+
+    public UserModel() {
+    }
 
     public UserModel(String name, String password) {
         this.email = name;
         this.password = password;
-    }
-
-    public UserModel() {
     }
 
     public String getEmail() {
