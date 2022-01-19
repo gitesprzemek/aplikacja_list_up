@@ -24,6 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".screen.AllTasksScreen" />
         <activity android:name=".screen.LoginScreen" />
         <activity android:name=".screen.RegistrationScreen" />
     </application>
