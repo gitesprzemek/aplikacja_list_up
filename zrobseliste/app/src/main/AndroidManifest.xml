@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity
+            android:name=".screen.GroupsScreen"
+            android:exported="false" />
+        <activity
+            android:name=".screen.MainScreen"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -18,16 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".screen.LoginScreen"
-            >
-        </activity>
-
-        <activity
-            android:name=".screen.RegistrationScreen"
-            >
-        </activity>
+        <activity android:name=".screen.AllTasksScreen" />
+        <activity android:name=".screen.LoginScreen" />
+        <activity android:name=".screen.RegistrationScreen" />
     </application>
 
 </manifest>

@@ -31,9 +31,10 @@ public class LoginScreen extends AppCompatActivity {
         TextView informationView = findViewById(R.id.informationView);
         EditText loginField = findViewById(R.id.loginField);
         EditText passwordField = findViewById(R.id.passwordField);
-        if(loginField.getText().toString().equals("przemek") && passwordField.getText().toString().equals("admin123") )
+        if(loginField.getText().toString().equals("") && passwordField.getText().toString().equals("") )
         {
             informationView.setText("Logowanie udane");
+            startActivity(new Intent(LoginScreen.this, MainScreen.class));
         }
         else
         {
