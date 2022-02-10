@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">zrobseliste</string>
+    <string name="select">Wybierz liste</string>
 </resources>
