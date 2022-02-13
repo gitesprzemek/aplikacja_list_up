@@ -24,9 +24,6 @@ public class LoginScreen extends AppCompatActivity {
         this.user = new UserModel();
     }
 
-
-
-
     public void onBtnLogClick(View view) {
         TextView informationView = findViewById(R.id.informationView);
         EditText loginField = findViewById(R.id.loginField);
