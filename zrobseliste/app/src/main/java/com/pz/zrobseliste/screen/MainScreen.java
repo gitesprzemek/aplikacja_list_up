@@ -19,11 +19,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.pz.zrobseliste.R;
 import com.pz.zrobseliste.utils.SwipeListener;
 
-public class MainScreen extends AppCompatActivity implements GestureDetector.OnGestureListener {
+public class MainScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,NavigationView.OnNavigationItemSelectedListener,GestureDetector.OnGestureListener {
 
     private SwipeListener swipeListener;
     private GestureDetectorCompat detector;
@@ -33,6 +34,7 @@ public class MainScreen extends AppCompatActivity implements GestureDetector.OnG
     ArrayAdapter<String> adapterItems;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
+    BottomNavigationView bottom_nav;
     Toolbar toolbar;
 
     @Override
@@ -46,14 +48,20 @@ public class MainScreen extends AppCompatActivity implements GestureDetector.OnG
 
         //---------------------menu------------------------------------------
         drawerLayout = findViewById(R.id.drawer_layout);
-        findViewById(R.id.imageMenu).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.openDrawer(GravityCompat.START);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
-            }
+        bottom_nav = findViewById(R.id.bottom_nav);
+        bottom_nav.setOnNavigationItemSelectedListener(this);
+        bottom_nav.setSelectedItemId(R.id.nav_main_screen);
 
-        });
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,
+                R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
         //------------------ drop down list----------------------------
         autoCompleteTxt = findViewById(R.id.auto_complete_txt);
@@ -70,22 +78,49 @@ public class MainScreen extends AppCompatActivity implements GestureDetector.OnG
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int item_id=item.getItemId();
-        if(item_id==R.id.nav_home)
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START))
         {
-            Toast.makeText(this,"Nav home",Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(GravityCompat.START);
         }
-        if(item_id==R.id.nav_settings)
-        {
-            Toast.makeText(this,"nav_settings",Toast.LENGTH_SHORT).show();
+        else {
+            super.onBackPressed();
         }
-        if(item_id==R.id.nav_logout)
+        }
+
+    public void onBtnAddClick(View view)
+    {
+        Toast.makeText(this, "dodano liste", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId())
         {
-            finish();
+            case R.id.nav_home:
+                Toast.makeText(this,"glowna",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_settings:
+                Toast.makeText(this,"ustawienia",Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.nav_logout:
+                finish();
+                break;
+            case R.id.nav_tasks:
+                Toast.makeText(this,"zadania",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_main_screen:
+                Toast.makeText(this,"glowny",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_groups:
+                Toast.makeText(this,"grupy",Toast.LENGTH_SHORT).show();
+                break;
         }
         return true;
     }
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent touchEvent) {
@@ -139,4 +174,6 @@ public class MainScreen extends AppCompatActivity implements GestureDetector.OnG
 
         return false;
     }
+
+
 }
