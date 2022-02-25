@@ -14,6 +14,7 @@ import com.pz.zrobseliste.models.UserModel;
 public class LoginScreen extends AppCompatActivity {
 
     private UserModel user;
+    TextView informationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +26,14 @@ public class LoginScreen extends AppCompatActivity {
     }
 
     public void onBtnLogClick(View view) {
-        TextView informationView = findViewById(R.id.informationView);
+        informationView = findViewById(R.id.informationView);
         EditText loginField = findViewById(R.id.loginField);
         EditText passwordField = findViewById(R.id.passwordField);
         if(loginField.getText().toString().equals("") && passwordField.getText().toString().equals("") )
         {
             informationView.setText("Logowanie udane");
             startActivity(new Intent(LoginScreen.this, MainScreen.class));
+            informationView.setText("");
         }
         else
         {

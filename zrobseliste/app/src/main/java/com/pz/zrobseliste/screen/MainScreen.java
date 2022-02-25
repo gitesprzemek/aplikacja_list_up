@@ -2,6 +2,7 @@ package com.pz.zrobseliste.screen;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GestureDetectorCompat;
@@ -17,6 +18,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -26,8 +29,17 @@ import com.pz.zrobseliste.utils.SwipeListener;
 
 public class MainScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,NavigationView.OnNavigationItemSelectedListener,GestureDetector.OnGestureListener {
 
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
     private SwipeListener swipeListener;
     private GestureDetectorCompat detector;
+
+
+    EditText nazwa_zadania;
+    ListView listView;
+    ArrayAdapter<String> listItems;
+    String [] listOptions = {"zadanie 1","Zadanie 2","Zadanie 3","Zadanie 4","sssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "Zadanie 6", "Zadanie 7","Zadanie 8"};
 
     String[] items = {"lista1","lista2","lista3"};
     AutoCompleteTextView autoCompleteTxt;
@@ -45,6 +57,10 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
         swipeListener = new SwipeListener();
 
         detector = new GestureDetectorCompat(this, this);
+        //--------------------list----------------------------------------------
+        listView = findViewById(R.id.list_view);
+        listItems = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_multiple_choice,listOptions);
+        listView.setAdapter(listItems);
 
         //---------------------menu------------------------------------------
         drawerLayout = findViewById(R.id.drawer_layout);
