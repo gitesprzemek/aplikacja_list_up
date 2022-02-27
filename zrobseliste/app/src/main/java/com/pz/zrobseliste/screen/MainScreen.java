@@ -1,5 +1,16 @@
 package com.pz.zrobseliste.screen;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -10,19 +21,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -193,7 +191,8 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
                 Toast.makeText(this,"glowny",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_groups:
-                Toast.makeText(this,"grupy",Toast.LENGTH_SHORT).show();
+                finish();
+                startActivity(new Intent(MainScreen.this, GroupsScreen.class));
                 break;
         }
         return true;
