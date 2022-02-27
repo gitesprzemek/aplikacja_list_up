@@ -8,6 +8,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GestureDetectorCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +27,12 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.pz.zrobseliste.R;
+import com.pz.zrobseliste.adapter.ToDoAdapter;
+import com.pz.zrobseliste.models.ToDoModel;
 import com.pz.zrobseliste.utils.SwipeListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,NavigationView.OnNavigationItemSelectedListener,GestureDetector.OnGestureListener {
 
@@ -33,13 +40,10 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
     private AlertDialog dialog;
     private SwipeListener swipeListener;
     private GestureDetectorCompat detector;
+    ToDoAdapter tasksAdapter;
+    private List<ToDoModel> taskList;
 
-
-    EditText nazwa_zadania;
-    ListView listView;
-    ArrayAdapter<String> listItems;
-    String [] listOptions = {"zadanie 1","Zadanie 2","Zadanie 3","Zadanie 4","sssssssssssssssssssssssssssssssssssssssssssssssssssssss",
-    "Zadanie 6", "Zadanie 7","Zadanie 8"};
+    RecyclerView tasks_rec_view;
 
     String[] items = {"lista1","lista2","lista3"};
     AutoCompleteTextView autoCompleteTxt;
@@ -58,9 +62,23 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
 
         detector = new GestureDetectorCompat(this, this);
         //--------------------list----------------------------------------------
-        listView = findViewById(R.id.list_view);
-        listItems = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_multiple_choice,listOptions);
-        listView.setAdapter(listItems);
+        taskList = new ArrayList<>();
+
+        tasks_rec_view = findViewById(R.id.task_rec_view);
+        tasks_rec_view.setLayoutManager(new LinearLayoutManager(this));
+        tasksAdapter = new ToDoAdapter(this);
+        tasks_rec_view.setAdapter(tasksAdapter);
+
+
+        for(int i=1;i<=6;i++)
+        {
+            ToDoModel task = new ToDoModel();
+            task.setTask("Zadanie : " + i);
+            task.setStatus(0);
+            task.setId(i);
+            taskList.add(task);
+        }
+        tasksAdapter.setTasks(taskList);
 
         //---------------------menu------------------------------------------
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -83,11 +101,55 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
         autoCompleteTxt = findViewById(R.id.auto_complete_txt);
         adapterItems = new ArrayAdapter<String>(this, R.layout.list_item, items);
         autoCompleteTxt.setAdapter(adapterItems);
+
         autoCompleteTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getApplicationContext(), "Item: " + item, Toast.LENGTH_SHORT).show();
+                if(item.equals("lista1"))
+
+                {
+                    taskList.clear();
+                    for(int i=1;i<=6;i++)
+                    {
+
+                        ToDoModel task = new ToDoModel();
+                        task.setTask("Zadanie : " + i);
+                        task.setStatus(0);
+                        task.setId(i);
+                        taskList.add(task);
+                    }
+                    tasksAdapter.setTasks(taskList);
+                }
+                if(item.equals("lista2"))
+
+                {
+                    taskList.clear();
+                    for(int i=7;i<=12;i++)
+                    {
+                        ToDoModel task = new ToDoModel();
+                        task.setTask("Zadanie : " + i);
+                        task.setStatus(0);
+                        task.setId(i);
+                        taskList.add(task);
+                    }
+                    tasksAdapter.setTasks(taskList);
+                }
+                if(item.equals("lista3"))
+
+                {
+                    taskList.clear();
+                    for(int i=13;i<=18;i++)
+                    {
+                        ToDoModel task = new ToDoModel();
+                        task.setTask("Zadanie : " + i);
+                        task.setStatus(0);
+                        task.setId(i);
+                        taskList.add(task);
+                    }
+                    tasksAdapter.setTasks(taskList);
+                }
+
             }
 
         });
@@ -124,7 +186,8 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
                 finish();
                 break;
             case R.id.nav_tasks:
-                Toast.makeText(this,"zadania",Toast.LENGTH_SHORT).show();
+                finish();
+                startActivity(new Intent(MainScreen.this, AllTasksScreen.class));
                 break;
             case R.id.nav_main_screen:
                 Toast.makeText(this,"glowny",Toast.LENGTH_SHORT).show();

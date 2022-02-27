@@ -14,6 +14,10 @@
             android:id="@+id/nav_groups"
             android:icon="@drawable/icon_group"
             android:title="grupy" />
+        <item
+            android:id="@+id/bottom_nav_menu"
+            android:icon="@drawable/icon_group"
+            android:title="menu" />
     </group>
 
 </menu>
