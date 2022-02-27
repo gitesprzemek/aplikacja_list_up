@@ -37,4 +37,5 @@ public class ToDoModel1 {
     public void setGroup(String group) {
         this.group = group;
     }
+
 }
