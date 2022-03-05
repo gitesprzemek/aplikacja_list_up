@@ -35,12 +35,11 @@ import java.util.List;
 
 public class AllTasksScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,NavigationView.OnNavigationItemSelectedListener{
 
-    SwipeListener swipeListener;
+
     RelativeLayout relativeLayout;
 
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
-    private GestureDetectorCompat detector;
     ToDoAdapter1 tasksAdapter;
     private List<ToDoModel1> taskList;
 
@@ -56,8 +55,6 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_tasks_screen);
-
-        swipeListener = new SwipeListener();
 
         //--------------------list----------------------------------------------
         taskList = new ArrayList<>();
@@ -77,6 +74,13 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
             task.setGroup("GR" + i);
             taskList.add(task);
         }
+        ToDoModel1 task = new ToDoModel1();
+        task.setTask("ZadanieeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+        task.setStatus(0);
+        task.setId(7);
+        task.setGroup("GR" + 7);
+        taskList.add(task);
+
         tasksAdapter.setTasks(taskList);
         //---------------------menu------------------------------------------
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -97,8 +101,6 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
     }
 
 
-
-
     @Override
     public void onBackPressed() {
         if(drawerLayout.isDrawerOpen(GravityCompat.START))
@@ -109,7 +111,6 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
             super.onBackPressed();
         }
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -126,28 +127,18 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
                 finish();
                 break;
             case R.id.nav_tasks:
-                Toast.makeText(this,"zadania",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_main_screen:
                 finish();
                 startActivity(new Intent(AllTasksScreen.this, MainScreen.class));
                 break;
             case R.id.nav_groups:
-                Toast.makeText(this,"grupy",Toast.LENGTH_SHORT).show();
+                finish();
+                startActivity(new Intent(AllTasksScreen.this, GroupsScreen.class));
                 break;
         }
         return true;
     }
 
-
-    public boolean onTouchEvent(MotionEvent touchEvent) {
-
-        if(swipeListener.getSwipeType() == SwipeType.LEFT){
-            startActivity(new Intent(AllTasksScreen.this, MainScreen.class));
-            return true;}
-
-
-        return true;
-    }
 
 }

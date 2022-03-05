@@ -33,7 +33,7 @@
 
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/addListButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="57dp"
@@ -77,7 +77,7 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toTopOf="@+id/imageButton2"
+                app:layout_constraintBottom_toTopOf="@+id/addTaskButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
@@ -85,7 +85,7 @@
 
             <ImageButton
 
-                android:id="@+id/imageButton2"
+                android:id="@+id/addTaskButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="355dp"
@@ -105,9 +105,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:menu="@menu/bottom_menu" />
-
-
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

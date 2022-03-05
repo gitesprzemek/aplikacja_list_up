@@ -1,18 +1,35 @@
 package com.pz.zrobseliste.screen;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.pz.zrobseliste.R;
+import com.pz.zrobseliste.adapter.Groups_Screen_Adapter;
+import com.pz.zrobseliste.interfaces.Groups_onClick_Interface;
 import com.pz.zrobseliste.models.GroupModel;
 import com.pz.zrobseliste.utils.SwipeListener;
 
@@ -20,140 +37,136 @@ import java.util.ArrayList;
 
 //import android.support.v4.app.Fragment;
 
-public class GroupsScreen extends AppCompatActivity {
+public class GroupsScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, Groups_onClick_Interface {
 
-    private SwipeListener swipeListener;
-    //    RelativeLayout relativeLayout;
-//    private List<GroupModel> groupsList;
+    private static final String TAG = "GroupsScreen";
+    private static final int NUM_COLUMNS=2;
+    private ArrayList<String> names = new ArrayList<>();
+    private ArrayList<String> group_codes = new ArrayList<>();
+
     private TableLayout table;
     private MainScreen mainScreen;
     private ArrayList<GroupModel> groupModels;
-//    public View currentView;
-//    private Context viewContext;
-
+    BottomNavigationView bottom_nav;
+    Button add_group_button;
+    RelativeLayout layout;
 
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups_screen);
-        createGroups();
-//        ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView);
 
-//        scrollView.addView(new Button(this));
-//        scrollView.addView(tableWithButtons(this));
-        ScrollView scrollView = findViewById(R.id.scrollView);
+        //======================grupy============================================
+        group_codes.add("BD1");
+        group_codes.add("Dom");
+        group_codes.add("Imp");
+        names.add("Bazy danych 1");
+        names.add("Domownicy");
+        names.add("Impreza");
+        RecyclerView recyclerView = findViewById(R.id.groups_rec_view);
+        Groups_Screen_Adapter groups_screen_adapter = new Groups_Screen_Adapter(this,names,group_codes,this);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(NUM_COLUMNS, LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        recyclerView.setAdapter(groups_screen_adapter);
 
-        TableLayout table = tableWithButtons(this);
-        scrollView.addView(table);
-    }
-
-    private void createGroups() {
-        groupModels = new ArrayList<>();
-        int n = 21;
-        for (int i = 1; i < n; i++) {
-            groupModels.add(new GroupModel(i, "Grupa " + i));
-        }
-
-    }
-
-    private TableLayout tableWithButtons(Context context) {
-//        int buttonDim = Resources.getSystem().getDisplayMetrics().widthPixels / 3;
-//        ArrayList<GroupModel> groupsList = new ArrayList<>();
-        int groupsListIndex = 0;
-        TableLayout table = new TableLayout(context);
-//        System.out.println(table);
-        TableRow tableRow = null;
-        while (groupsListIndex < groupModels.size()) {
-
-//            System.out.println(groupsListIndex);
-            tableRow = new TableRow(context);
-            tableRow.setLayoutParams(new TableLayout.LayoutParams
-                    (ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            1.0f)
-            );
-            System.out.println(tableRow);
-            table.addView(tableRow);
-            for (int i = 0; i < 2; i++) {
-                if (groupsListIndex == groupModels.size()) break;
-                GroupModel group = groupModels.get(groupsListIndex);
-                tableRow.addView(createButton(group, context));
-                groupsListIndex++;
-            }
-        }
-        if (groupModels.size() % 2 == 0) {
-            tableRow = new TableRow(context);
-            tableRow.setLayoutParams(new TableLayout.LayoutParams
-                    (ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            1.0f)
-            );
-            table.addView(tableRow);
-            tableRow.addView(createNewGroupButton(context));
-        } else {
-//            table.addView(tableRow);
-            tableRow.addView(createNewGroupButton(context));
-
-        }
-        return table;
-    }
-
-    //
-    private Button createButton(GroupModel group, Context context) {
-
-        int buttonDim = Resources.getSystem().getDisplayMetrics().widthPixels / 3;
-
-        Button button = new Button(context);
-//        button.setLayoutParams(new TableRow.LayoutParams(
-//                TableRow.LayoutParams.WRAP_CONTENT,
-//                TableRow.LayoutParams.WRAP_CONTENT,
-//                        1.0f));
-        button.setText(group.getAbb());
-        button.setWidth(buttonDim);
-        button.setHeight(buttonDim);
-        button.callOnClick();
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
+        add_group_button = findViewById(R.id.add_group_button);
+        add_group_button.setOnClickListener(new View.OnClickListener() {
+           @Override
             public void onClick(View v) {
-                System.out.println(group.registrationDatatoJSON()
+                buildDialog();
+           }
+       });
 
+        //===========================bottommenu================================
+        bottom_nav = findViewById(R.id.bottom_nav);
+        bottom_nav.setOnNavigationItemSelectedListener(this);
+        bottom_nav.setSelectedItemId(R.id.nav_groups);
 
-                );
-            }
-        });
-        return button;
+    }
+
+    private void buildDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.add_new_group_dialog,null);
+
+        EditText name = view.findViewById(R.id.edit_text_group_name);
+
+        builder.setView(view);
+        builder.setTitle("Podaj nazwe grupy").
+                setPositiveButton("ADD", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                            group_codes.add(returngroupcode(name.getText().toString()));
+                            names.add(name.getText().toString());
+                    }
+                })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.create().show();
+
+    }
+
+    private String returngroupcode(String g_code) {
+        String new_g_code="";
+        String []arr = g_code.split(" ");
+        if(arr.length==1){
+            String []array = arr[0].split("");
+            new_g_code=new_g_code + array[1];
+            new_g_code=new_g_code + array[2];
+            new_g_code=new_g_code + array[3];
+        }
+        if(arr.length==2){
+            String []array = arr[0].split("");
+            new_g_code=new_g_code + array[1];
+            new_g_code=new_g_code + array[2];
+            array = arr[1].split("");
+            new_g_code=new_g_code + array[1];
+        }
+        if(arr.length>2){
+            String []array = arr[0].split("");
+            new_g_code=new_g_code + array[1];
+            array = arr[1].split("");
+            new_g_code=new_g_code + array[1];
+            array = arr[2].split("");
+            new_g_code=new_g_code + array[1];
+        }
+
+        return new_g_code;
     }
 
 
-    private Button createNewGroupButton(Context context) {
-        int buttonDim = Resources.getSystem().getDisplayMetrics().widthPixels / 4;
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.nav_tasks:
+                finish();
+                startActivity(new Intent(GroupsScreen.this, AllTasksScreen.class));
+                break;
+            case R.id.nav_main_screen:
+                finish();
+                startActivity(new Intent(GroupsScreen.this, MainScreen.class));
+                break;
+            case R.id.nav_groups:
+                break;
+        }
+        return true;
+    }
 
-        Button button = new Button(context);
-//        button.setLayoutParams(new TableRow.LayoutParams(
-//                TableRow.LayoutParams.WRAP_CONTENT,
-//                TableRow.LayoutParams.WRAP_CONTENT,
-//                1.0f
-//        ));
 
-        button.setText("Dodaj Grupe");
-        button.setWidth(buttonDim / 2);
-        button.setHeight(buttonDim);
+    @Override
+    public void onGroupButtonClick() {
+        finish();
+        startActivity(new Intent(GroupsScreen.this, MainScreen.class));
 
-        button.setOnClickListener(new View.OnClickListener() {
+    }
 
-            @Override
-            public void onClick(View v) {
-                System.out.println("DODANO GRUPE");
-                int id = groupModels.size();
-                String name = "Grupa " + id;
-                GroupModel group = new GroupModel(id, name);
-                groupModels.add(group);
+    @Override
+    public void onManagmentButtonClick() {
 
-            }
-        });
-
-        return button;
     }
 }

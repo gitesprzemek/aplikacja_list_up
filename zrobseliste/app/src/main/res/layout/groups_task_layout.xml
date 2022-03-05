@@ -6,8 +6,6 @@
     android:layout_height="wrap_content"
 
 
-
-
     app:cardElevation="4dp"
     app:cardCornerRadius="8dp"
     android:layout_marginVertical="8dp">
@@ -15,7 +13,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="1dp">
+        android:padding="1dp"
+        android:id="@+id/rel_layout">
 
         <CheckBox
             android:id="@+id/check_box"

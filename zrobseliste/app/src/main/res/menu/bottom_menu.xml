@@ -4,7 +4,7 @@
     <group>
         <item
             android:id="@+id/nav_tasks"
-            android:icon="@drawable/icon_list"
+            android:icon="@drawable/ic_task"
             android:title="zadania" />
         <item
             android:id="@+id/nav_main_screen"
@@ -16,7 +16,7 @@
             android:title="grupy" />
         <item
             android:id="@+id/bottom_nav_menu"
-            android:icon="@drawable/icon_group"
+            android:icon="@drawable/icon_list"
             android:title="menu" />
     </group>
 

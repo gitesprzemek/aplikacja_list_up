@@ -1,15 +1,21 @@
 package com.pz.zrobseliste.adapter;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pz.zrobseliste.R;
 import com.pz.zrobseliste.models.ToDoModel;
 import com.pz.zrobseliste.screen.MainScreen;
+import com.pz.zrobseliste.utils.AddNewTask;
 
 import java.util.List;
 
@@ -33,6 +39,25 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder>{
         ToDoModel item = todoList.get(position);
         holder.task.setText(item.getTask());
         holder.task.setChecked(toBoolean(item.getStatus()));
+        /*
+        if(item.getStatus()==1)
+        {
+            holder.rel_layout.setBackgroundColor(Color.GREEN);
+        }
+        */
+        holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    System.out.println("Wyslij do serwera polecenie ustawienia statusu na 1");
+                }
+                else
+                {
+                    System.out.println("Wyslij do serwera polecenie ustawienia statusu na 0");
+                }
+            }
+        });
 
     }
 
@@ -51,12 +76,37 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder>{
         return n!=0;
     }
 
+    public Context getContext()
+    {
+        return activity;
+    }
+
+    public void deleteItem(int position){
+        ToDoModel item = todoList.get(position);
+        todoList.remove(position);
+        notifyItemRemoved(position);
+
+    }
+
+    public void editItem(int position){
+        ToDoModel item = todoList.get(position);
+        Bundle bundle = new Bundle();
+        bundle.putInt("id",item.getId());
+        bundle.putString("task",item.getTask());
+        AddNewTask fragment = new AddNewTask();
+        fragment.setArguments(bundle);
+        fragment.show(activity.getSupportFragmentManager(),AddNewTask.TAG);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder{
         CheckBox task;
+        RelativeLayout rel_layout;
         ViewHolder(View view)
         {
             super(view);
+            rel_layout = view.findViewById(R.id.rel_layout);
             task = view.findViewById(R.id.check_box);
+
         }
     }
 

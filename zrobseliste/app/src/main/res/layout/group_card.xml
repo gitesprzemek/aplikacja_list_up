@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+        <androidx.cardview.widget.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tool="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <Button
+                    android:id="@+id/group_show_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="40dp"
+                    android:text="BD1" />
+
+                <TextView
+                    android:id="@+id/text_view_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/group_show_button"
+                    android:layout_marginRight="30dp"
+                    android:text="Bazy danych 1zzzz"
+                    android:textSize="16sp" />
+
+                <ImageButton
+                    android:id="@+id/group_management_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/group_show_button"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/icon_group_managment" />
+
+
+            </RelativeLayout>
+
+
+        </androidx.cardview.widget.CardView>

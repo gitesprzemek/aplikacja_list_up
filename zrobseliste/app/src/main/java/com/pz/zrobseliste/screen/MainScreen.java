@@ -1,5 +1,6 @@
 package com.pz.zrobseliste.screen;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,20 +22,25 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GestureDetectorCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.pz.zrobseliste.R;
+import com.pz.zrobseliste.adapter.RecyclerItemTouch;
 import com.pz.zrobseliste.adapter.ToDoAdapter;
+import com.pz.zrobseliste.interfaces.DialogCloseListener;
 import com.pz.zrobseliste.models.ToDoModel;
+import com.pz.zrobseliste.utils.AddNewTask;
 import com.pz.zrobseliste.utils.SwipeListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,NavigationView.OnNavigationItemSelectedListener,GestureDetector.OnGestureListener {
+public class MainScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener
+        ,NavigationView.OnNavigationItemSelectedListener, DialogCloseListener {
 
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
@@ -40,6 +48,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
     private GestureDetectorCompat detector;
     ToDoAdapter tasksAdapter;
     private List<ToDoModel> taskList;
+    private ImageButton addTaskButton;
 
     RecyclerView tasks_rec_view;
 
@@ -56,9 +65,16 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
-        swipeListener = new SwipeListener();
+        //=============================addTask==================================
+        addTaskButton = findViewById(R.id.addTaskButton);
+        addTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                AddNewTask.newInstance().show(getSupportFragmentManager(),AddNewTask.TAG);
+            }
 
-        detector = new GestureDetectorCompat(this, this);
+        });
+
         //--------------------list----------------------------------------------
         taskList = new ArrayList<>();
 
@@ -68,7 +84,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
         tasks_rec_view.setAdapter(tasksAdapter);
 
 
-        for(int i=1;i<=6;i++)
+        for(int i=0;i<=6;i++)
         {
             ToDoModel task = new ToDoModel();
             task.setTask("Zadanie : " + i);
@@ -108,7 +124,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
 
                 {
                     taskList.clear();
-                    for(int i=1;i<=6;i++)
+                    for(int i=0;i<=6;i++)
                     {
 
                         ToDoModel task = new ToDoModel();
@@ -127,7 +143,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
                     {
                         ToDoModel task = new ToDoModel();
                         task.setTask("Zadanie : " + i);
-                        task.setStatus(0);
+                        task.setStatus(1);
                         task.setId(i);
                         taskList.add(task);
                     }
@@ -151,7 +167,28 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
             }
 
         });
+        //=============================edit_delete_task=========================
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouch(tasksAdapter));
+        itemTouchHelper.attachToRecyclerView(tasks_rec_view);
+
+
     }
+    @Override
+    public void handleDialogClose(DialogInterface dialog)
+    {
+     /*   for(int i=0;i<=6;i++)
+        {
+
+            ToDoModel task = new ToDoModel();
+            task.setTask("Zadanie : " + i);
+            task.setStatus(0);
+            task.setId(i);
+            taskList.add(task);
+        }
+        tasksAdapter.setTasks(taskList);
+    */
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -188,7 +225,6 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
                 startActivity(new Intent(MainScreen.this, AllTasksScreen.class));
                 break;
             case R.id.nav_main_screen:
-                Toast.makeText(this,"glowny",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_groups:
                 finish();
@@ -207,51 +243,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
         return super.onTouchEvent(touchEvent);
     }
 
-    @Override
-    public boolean onDown(MotionEvent e) {
-        return false;
-    }
 
-    @Override
-    public void onShowPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        float x1 = e1.getX();
-        float y1 = e1.getY();
-        float x2 = e2.getX();
-        float y2 = e2.getY();
-
-        swipeListener.setSwipeType(x1, y1, x2, y2, velocityX, velocityY);
-
-        switch (swipeListener.getSwipeType()){
-            case LEFT:
-                startActivity(new Intent(MainScreen.this, AllTasksScreen.class));
-                return true;
-            case RIGHT:
-                startActivity(new Intent(MainScreen.this, GroupsScreen.class));
-                return true;
-        }
-
-        return false;
-    }
 
 
 }

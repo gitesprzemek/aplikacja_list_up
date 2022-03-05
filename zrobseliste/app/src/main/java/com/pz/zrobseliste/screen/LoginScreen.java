@@ -48,6 +48,7 @@ public class LoginScreen extends AppCompatActivity {
 
     public void onBtnRejClick(View view)
     {
+
         startActivity(new Intent(LoginScreen.this, RegistrationScreen.class));
 
     }
