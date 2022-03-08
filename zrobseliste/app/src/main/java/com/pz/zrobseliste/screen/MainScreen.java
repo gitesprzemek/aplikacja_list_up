@@ -230,6 +230,10 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
                 finish();
                 startActivity(new Intent(MainScreen.this, GroupsScreen.class));
                 break;
+            case R.id.nav_menu:
+                finish();
+                startActivity(new Intent(MainScreen.this, MenuScreen.class));
+                break;
         }
         return true;
     }

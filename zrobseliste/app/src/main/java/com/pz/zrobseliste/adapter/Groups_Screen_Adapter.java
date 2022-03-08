@@ -54,14 +54,13 @@ public class Groups_Screen_Adapter extends RecyclerView.Adapter<Groups_Screen_Ad
         holder.group_show_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groups_onClick_interface.onGroupButtonClick();
-                Toast.makeText(v.getContext(),names.get(position),Toast.LENGTH_SHORT).show();
+                groups_onClick_interface.onGroupButtonClick(holder.getAdapterPosition());
             }
         });
         holder.group_management_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groups_onClick_interface.onManagmentButtonClick();
+                groups_onClick_interface.onManagmentButtonClick(holder.getAdapterPosition());
 
             }
         });

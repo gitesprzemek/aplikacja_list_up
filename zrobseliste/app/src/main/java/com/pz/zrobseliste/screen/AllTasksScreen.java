@@ -136,6 +136,10 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
                 finish();
                 startActivity(new Intent(AllTasksScreen.this, GroupsScreen.class));
                 break;
+            case R.id.nav_menu:
+                finish();
+                startActivity(new Intent(AllTasksScreen.this, MenuScreen.class));
+                break;
         }
         return true;
     }

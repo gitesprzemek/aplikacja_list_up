@@ -153,20 +153,27 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                 break;
             case R.id.nav_groups:
                 break;
+            case R.id.nav_menu:
+                finish();
+                startActivity(new Intent(GroupsScreen.this, MenuScreen.class));
+                break;
+
         }
         return true;
     }
 
 
     @Override
-    public void onGroupButtonClick() {
+    public void onGroupButtonClick(int position) {
+        Toast.makeText(this,names.get(position),Toast.LENGTH_SHORT).show();
         finish();
         startActivity(new Intent(GroupsScreen.this, MainScreen.class));
+
 
     }
 
     @Override
-    public void onManagmentButtonClick() {
+    public void onManagmentButtonClick(int position) {
 
     }
 }
