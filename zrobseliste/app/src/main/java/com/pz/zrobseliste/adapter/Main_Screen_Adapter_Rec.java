@@ -1,7 +1,6 @@
 package com.pz.zrobseliste.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +18,11 @@ import com.pz.zrobseliste.utils.AddNewTask;
 
 import java.util.List;
 
-public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder>{
+public class Main_Screen_Adapter_Rec extends RecyclerView.Adapter<Main_Screen_Adapter_Rec.ViewHolder>{
     private List<ToDoModel> todoList;
     private MainScreen activity;
 
-    public ToDoAdapter(MainScreen activity){
+    public Main_Screen_Adapter_Rec(MainScreen activity){
         this.activity = activity;
     }
 

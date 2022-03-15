@@ -1,61 +1,57 @@
 package com.pz.zrobseliste.screen;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.pz.zrobseliste.R;
-import com.pz.zrobseliste.adapter.Groups_Screen_Adapter;
-import com.pz.zrobseliste.interfaces.Groups_onClick_Interface;
-import com.pz.zrobseliste.models.GroupModel;
-import com.pz.zrobseliste.utils.SwipeListener;
+import com.pz.zrobseliste.adapter.Menu_Screen_Adapter_Rec;
+import com.pz.zrobseliste.interfaces.MenuHandlerInterface;
+import com.pz.zrobseliste.models.MenuModel;
 
 import java.util.ArrayList;
 
 //import android.support.v4.app.Fragment;
 
-public class MenuScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+public class MenuScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MenuHandlerInterface {
 
+    RecyclerView recylerView;
+    Menu_Screen_Adapter_Rec recyclerAdapter;
+    private ArrayList<MenuModel> options = new ArrayList<>();
 
 
     BottomNavigationView bottom_nav;
 
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_screen);
+        //===========================options====================================
+        options.add(new MenuModel(R.drawable.ic_action_user,1,"Autorzy aplikacji"));
+        options.add(new MenuModel(R.drawable.settings_icon,2,"Ustawienia"));
+        options.add(new MenuModel(R.drawable.logout_icon,3,"Wyloguj"));
+
+
+        recylerView = findViewById(R.id.rec_view_menu);
+        recyclerAdapter = new Menu_Screen_Adapter_Rec(options,this);
+        recylerView.setLayoutManager(new LinearLayoutManager(this));
+        recylerView.setAdapter(recyclerAdapter);
 
         //===========================bottommenu================================
         bottom_nav = findViewById(R.id.bottom_nav);
         bottom_nav.setOnNavigationItemSelectedListener(this);
-        bottom_nav.setSelectedItemId(R.id.nav_groups);
+        bottom_nav.setSelectedItemId(R.id.nav_menu);
 
     }
-
 
 
 
@@ -77,8 +73,30 @@ public class MenuScreen extends AppCompatActivity implements BottomNavigationVie
                 break;
             case R.id.nav_menu:
                 break;
+
         }
         return true;
     }
 
+
+    @Override
+    public void onMenuItemClick(int position) {
+        MenuModel temp;
+        temp = options.get(position);
+        if(temp.getId()== 1)
+        {
+            Toast.makeText(this,temp.getText(), Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(MenuScreen.this, AboutCreatorsScreen.class));
+        }
+        if(temp.getId()==2)
+        {
+            Toast.makeText(this,temp.getText(), Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(MenuScreen.this, SettingsScreen.class));
+        }
+        if(temp.getId()==3)
+        {
+            finish();
+        }
+
+    }
 }

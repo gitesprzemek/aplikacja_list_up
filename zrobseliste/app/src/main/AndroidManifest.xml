@@ -27,6 +27,9 @@
         <activity android:name=".screen.AllTasksScreen" />
         <activity android:name=".screen.LoginScreen" />
         <activity android:name=".screen.RegistrationScreen" />
+        <activity android:name=".screen.MenuScreen" />
+        <activity android:name=".screen.AboutCreatorsScreen" />
+        <activity android:name=".screen.SettingsScreen" />
     </application>
 
 </manifest>

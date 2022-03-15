@@ -1,42 +1,36 @@
 package com.pz.zrobseliste.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pz.zrobseliste.R;
-import com.pz.zrobseliste.interfaces.Groups_onClick_Interface;
-import com.pz.zrobseliste.screen.AllTasksScreen;
-import com.pz.zrobseliste.screen.GroupsScreen;
+import com.pz.zrobseliste.interfaces.GroupsonClickInterface;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
-public class Groups_Screen_Adapter extends RecyclerView.Adapter<Groups_Screen_Adapter.ViewHolder> {
+public class Groups_Screen_Adapter_Rec extends RecyclerView.Adapter<Groups_Screen_Adapter_Rec.ViewHolder> {
 
     private static final String TAG = "Groups_Screen_Adapter";
 
     private ArrayList<String> names = new ArrayList<>();
     private ArrayList<String> group_codes = new ArrayList<>();
     private Context context;
-    private Groups_onClick_Interface groups_onClick_interface;
+    private GroupsonClickInterface groupsonClick_interface;
 
-    public Groups_Screen_Adapter( Context context, ArrayList<String> names,ArrayList<String> group_codes, Groups_onClick_Interface groups_onClick_interface) {
+    public Groups_Screen_Adapter_Rec(Context context, ArrayList<String> names, ArrayList<String> group_codes, GroupsonClickInterface groupsonClick_interface) {
         this.names = names;
         this.group_codes = group_codes;
         this.context = context;
-        this.groups_onClick_interface = groups_onClick_interface;
+        this.groupsonClick_interface = groupsonClick_interface;
     }
 
     @NonNull
@@ -44,7 +38,7 @@ public class Groups_Screen_Adapter extends RecyclerView.Adapter<Groups_Screen_Ad
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.group_card,parent,false);
-        return new Groups_Screen_Adapter.ViewHolder(itemView);
+        return new Groups_Screen_Adapter_Rec.ViewHolder(itemView);
     }
 
     @Override
@@ -54,13 +48,13 @@ public class Groups_Screen_Adapter extends RecyclerView.Adapter<Groups_Screen_Ad
         holder.group_show_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groups_onClick_interface.onGroupButtonClick(holder.getAdapterPosition());
+                groupsonClick_interface.onGroupButtonClick(holder.getAdapterPosition());
             }
         });
         holder.group_management_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groups_onClick_interface.onManagmentButtonClick(holder.getAdapterPosition());
+                groupsonClick_interface.onManagmentButtonClick(holder.getAdapterPosition());
 
             }
         });

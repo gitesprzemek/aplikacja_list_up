@@ -16,9 +16,9 @@ import com.pz.zrobseliste.R;
 
 public class RecyclerItemTouch extends ItemTouchHelper.SimpleCallback {
 
-    private ToDoAdapter adapter;
+    private Main_Screen_Adapter_Rec adapter;
 
-    public RecyclerItemTouch(ToDoAdapter adapter){
+    public RecyclerItemTouch(Main_Screen_Adapter_Rec adapter){
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.adapter = adapter;
 

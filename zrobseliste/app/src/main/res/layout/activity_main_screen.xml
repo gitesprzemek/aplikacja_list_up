@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bgc1"
-    android:fitsSystemWindows="true"
-    tools:context=".screen.MainScreen">
-
-
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/bgc1">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -24,7 +16,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/menu_icon" />
+             />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
@@ -36,25 +28,39 @@
                 android:id="@+id/addListButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="57dp"
+                android:layout_marginTop="56dp"
                 android:background="@drawable/btn_bg"
                 android:onClick="onBtnAddClick"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.908"
+                app:layout_constraintHorizontal_bias="0.786"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/icon_add"
                 tools:ignore="SpeakableTextPresentCheck" />
 
+            <ImageButton
+                android:id="@+id/deleteListButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="56dp"
+                android:background="@drawable/btn_bg"
+                android:onClick="onBtnAddClick"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.955"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/icon_delete_list"
+                tools:ignore="SpeakableTextPresentCheck" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout"
-                android:hint="Listy"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="50dp"
-                android:layout_marginEnd="120dp"
+                android:layout_marginEnd="140dp"
+                android:hint="Listy"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -110,13 +116,3 @@
 
 
     </LinearLayout>
-
-    <com.google.android.material.navigation.NavigationView
-        android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/header"
-        app:menu="@menu/main_menu" />
-</androidx.drawerlayout.widget.DrawerLayout>

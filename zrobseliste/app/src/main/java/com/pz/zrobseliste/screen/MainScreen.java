@@ -3,34 +3,28 @@ package com.pz.zrobseliste.screen;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GestureDetectorCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 import com.pz.zrobseliste.R;
 import com.pz.zrobseliste.adapter.RecyclerItemTouch;
-import com.pz.zrobseliste.adapter.ToDoAdapter;
+import com.pz.zrobseliste.adapter.Main_Screen_Adapter_Rec;
 import com.pz.zrobseliste.interfaces.DialogCloseListener;
 import com.pz.zrobseliste.models.ToDoModel;
 import com.pz.zrobseliste.utils.AddNewTask;
@@ -39,14 +33,13 @@ import com.pz.zrobseliste.utils.SwipeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener
-        ,NavigationView.OnNavigationItemSelectedListener, DialogCloseListener {
+public class MainScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, DialogCloseListener {
 
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
     private SwipeListener swipeListener;
     private GestureDetectorCompat detector;
-    ToDoAdapter tasksAdapter;
+    Main_Screen_Adapter_Rec tasksAdapter;
     private List<ToDoModel> taskList;
     private ImageButton addTaskButton;
 
@@ -55,8 +48,6 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
     String[] items = {"lista1","lista2","lista3"};
     AutoCompleteTextView autoCompleteTxt;
     ArrayAdapter<String> adapterItems;
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
     BottomNavigationView bottom_nav;
     Toolbar toolbar;
 
@@ -80,7 +71,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
 
         tasks_rec_view = findViewById(R.id.task_rec_view);
         tasks_rec_view.setLayoutManager(new LinearLayoutManager(this));
-        tasksAdapter = new ToDoAdapter(this);
+        tasksAdapter = new Main_Screen_Adapter_Rec(this);
         tasks_rec_view.setAdapter(tasksAdapter);
 
 
@@ -95,9 +86,6 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
         tasksAdapter.setTasks(taskList);
 
         //---------------------menu------------------------------------------
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         bottom_nav = findViewById(R.id.bottom_nav);
         bottom_nav.setOnNavigationItemSelectedListener(this);
@@ -105,11 +93,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,
-                R.string.navigation_drawer_open,R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        //getSupportActionBar().setTitle(null);
 
         //------------------ drop down list----------------------------
         autoCompleteTxt = findViewById(R.id.auto_complete_txt);
@@ -189,18 +173,6 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
     */
     }
 
-
-    @Override
-    public void onBackPressed() {
-        if(drawerLayout.isDrawerOpen(GravityCompat.START))
-        {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else {
-            super.onBackPressed();
-        }
-        }
-
     public void onBtnAddClick(View view)
     {
         Toast.makeText(this, "dodano liste", Toast.LENGTH_SHORT).show();
@@ -210,16 +182,6 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId())
         {
-            case R.id.nav_home:
-                Toast.makeText(this,"glowna",Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.nav_settings:
-                Toast.makeText(this,"ustawienia",Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.nav_logout:
-                finish();
-                break;
             case R.id.nav_tasks:
                 finish();
                 startActivity(new Intent(MainScreen.this, AllTasksScreen.class));
@@ -237,7 +199,6 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
         }
         return true;
     }
-
 
 
     @Override

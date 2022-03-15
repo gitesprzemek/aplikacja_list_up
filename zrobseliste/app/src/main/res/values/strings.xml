@@ -3,4 +3,7 @@
     <string name="select">Wybierz liste</string>
     <string name="navigation_drawer_open">Open navigation rawer</string>
     <string name="navigation_drawer_close">Close navigation rawer</string>
+    <string name="informacje_i_preferencje">Informacje i Preferencje</string>
+    <string name="o_tw_rcach">Autorzy aplikacji</string>
+    <string name="about_text">Czwórka młodych adeptów informatyki uczęszczających na Uniwersytett Mikołaja Kopernika</string>
 </resources>

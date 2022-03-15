@@ -9,19 +9,16 @@ import android.widget.CheckBox;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pz.zrobseliste.R;
-import com.pz.zrobseliste.models.ToDoModel;
 import com.pz.zrobseliste.models.ToDoModel1;
 import com.pz.zrobseliste.screen.AllTasksScreen;
-import com.pz.zrobseliste.screen.MainScreen;
 
-import java.text.BreakIterator;
 import java.util.List;
 
-public class ToDoAdapter1 extends RecyclerView.Adapter<ToDoAdapter1.ViewHolder>{
+public class All_Tast_Screen_Adapter_Rec extends RecyclerView.Adapter<All_Tast_Screen_Adapter_Rec.ViewHolder>{
     private List<ToDoModel1> todoList;
     private AllTasksScreen activity;
 
-    public ToDoAdapter1(AllTasksScreen activity){
+    public All_Tast_Screen_Adapter_Rec(AllTasksScreen activity){
         this.activity = activity;
     }
 
