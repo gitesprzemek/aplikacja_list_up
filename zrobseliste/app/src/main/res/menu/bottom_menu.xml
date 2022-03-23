@@ -5,19 +5,19 @@
         <item
             android:id="@+id/nav_tasks"
             android:icon="@drawable/ic_task"
-            android:title="zadania" />
+            android:title="@string/tasks" />
         <item
             android:id="@+id/nav_main_screen"
             android:icon="@drawable/home_icon"
-            android:title="glowny" />
+            android:title="@string/main" />
         <item
             android:id="@+id/nav_groups"
             android:icon="@drawable/icon_group"
-            android:title="grupy" />
+            android:title="@string/groups" />
         <item
             android:id="@+id/nav_menu"
             android:icon="@drawable/icon_list"
-            android:title="menu" />
+            android:title="@string/menu" />
 
     </group>
 

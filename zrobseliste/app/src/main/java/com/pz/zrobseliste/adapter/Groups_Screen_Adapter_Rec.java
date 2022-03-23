@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pz.zrobseliste.R;
 import com.pz.zrobseliste.interfaces.GroupsonClickInterface;
+import com.pz.zrobseliste.models.GroupModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -21,14 +23,15 @@ public class Groups_Screen_Adapter_Rec extends RecyclerView.Adapter<Groups_Scree
 
     private static final String TAG = "Groups_Screen_Adapter";
 
+    private ArrayList<GroupModel> groups= new ArrayList<>();
+
     private ArrayList<String> names = new ArrayList<>();
     private ArrayList<String> group_codes = new ArrayList<>();
     private Context context;
     private GroupsonClickInterface groupsonClick_interface;
 
-    public Groups_Screen_Adapter_Rec(Context context, ArrayList<String> names, ArrayList<String> group_codes, GroupsonClickInterface groupsonClick_interface) {
-        this.names = names;
-        this.group_codes = group_codes;
+    public Groups_Screen_Adapter_Rec(Context context, ArrayList<GroupModel> groups, GroupsonClickInterface groupsonClick_interface) {
+        this.groups = groups;
         this.context = context;
         this.groupsonClick_interface = groupsonClick_interface;
     }
@@ -43,8 +46,9 @@ public class Groups_Screen_Adapter_Rec extends RecyclerView.Adapter<Groups_Scree
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.text_view_name.setText(names.get(position));
-        holder.group_show_button.setText(group_codes.get(position));
+        GroupModel group = groups.get(position);
+        holder.text_view_name.setText(group.getName());
+        holder.group_show_button.setText(group.getGroup_code());
         holder.group_show_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,7 +58,7 @@ public class Groups_Screen_Adapter_Rec extends RecyclerView.Adapter<Groups_Scree
         holder.group_management_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groupsonClick_interface.onManagmentButtonClick(holder.getAdapterPosition());
+                groupsonClick_interface.onManagmentButtonClick(holder.getAdapterPosition(),v);
 
             }
         });
@@ -63,7 +67,7 @@ public class Groups_Screen_Adapter_Rec extends RecyclerView.Adapter<Groups_Scree
 
     @Override
     public int getItemCount() {
-        return names.size();
+        return groups.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -77,6 +81,7 @@ public class Groups_Screen_Adapter_Rec extends RecyclerView.Adapter<Groups_Scree
             text_view_name = itemView.findViewById(R.id.text_view_name);
             group_show_button = itemView.findViewById(R.id.group_show_button);
             group_management_button = itemView.findViewById(R.id.group_management_button);
+
 
         }
     }

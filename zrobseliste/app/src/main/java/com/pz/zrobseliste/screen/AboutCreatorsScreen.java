@@ -1,5 +1,6 @@
 package com.pz.zrobseliste.screen;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -7,7 +8,9 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,14 +34,13 @@ public class AboutCreatorsScreen extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_creators_screen);
 
-        image_back_button_creators = findViewById(R.id.image_back_button_creators);
-        image_back_button_creators.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        Toolbar toolbar = findViewById(R.id.toolbar_creators);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.about_creators);
+
+
     }
+
 
 
 }

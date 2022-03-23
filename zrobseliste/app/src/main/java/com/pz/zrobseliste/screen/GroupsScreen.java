@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.Toast;
@@ -28,19 +29,17 @@ import java.util.ArrayList;
 
 //import android.support.v4.app.Fragment;
 
-public class GroupsScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, GroupsonClickInterface {
+public class GroupsScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, GroupsonClickInterface{
 
     private static final String TAG = "GroupsScreen";
     private static final int NUM_COLUMNS=2;
-    private ArrayList<String> names = new ArrayList<>();
-    private ArrayList<String> group_codes = new ArrayList<>();
+    private ArrayList<GroupModel> groups = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private Groups_Screen_Adapter_Rec groups_screen_adapter;
 
-    private TableLayout table;
-    private MainScreen mainScreen;
-    private ArrayList<GroupModel> groupModels;
     BottomNavigationView bottom_nav;
     Button add_group_button;
-    RelativeLayout layout;
+
 
     @Override
 
@@ -49,14 +48,12 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_groups_screen);
 
         //======================grupy============================================
-        group_codes.add("BD1");
-        group_codes.add("Dom");
-        group_codes.add("Imp");
-        names.add("Bazy danych 1");
-        names.add("Domownicy");
-        names.add("Impreza");
-        RecyclerView recyclerView = findViewById(R.id.groups_rec_view);
-        Groups_Screen_Adapter_Rec groups_screen_adapter = new Groups_Screen_Adapter_Rec(this,names,group_codes,this);
+        groups.add(new GroupModel(0,"Bazy Danych 1","BD1"));
+        groups.add(new GroupModel(1,"Domownicy","Dom"));
+        groups.add(new GroupModel(2,"Programowanie Zespolowe","PrZ"));
+
+        recyclerView = findViewById(R.id.groups_rec_view);
+        groups_screen_adapter = new Groups_Screen_Adapter_Rec(this,groups,this);
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(NUM_COLUMNS, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         recyclerView.setAdapter(groups_screen_adapter);
@@ -83,15 +80,18 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         EditText name = view.findViewById(R.id.edit_text_group_name);
 
         builder.setView(view);
-        builder.setTitle("Podaj nazwe grupy").
-                setPositiveButton("ADD", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.enter_group_name).
+                setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                            group_codes.add(returngroupcode(name.getText().toString()));
-                            names.add(name.getText().toString());
+                        GroupModel group = new GroupModel();
+                        group.setName(name.getText().toString());
+                        group.setGroup_code(returngroupcode(name.getText().toString()));
+                        group.setGroupID(3);
+                        groups.add(group);
                     }
                 })
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -156,15 +156,40 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public void onGroupButtonClick(int position) {
-        Toast.makeText(this,names.get(position),Toast.LENGTH_SHORT).show();
+        GroupModel group = groups.get(position);
+        Toast.makeText(this,group.getName(),Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(GroupsScreen.this,MainScreen.class);
+        intent.putExtra("group_code",group.getGroup_code());
         finish();
-        startActivity(new Intent(GroupsScreen.this, MainScreen.class));
-
-
+        startActivity(intent);
     }
 
     @Override
-    public void onManagmentButtonClick(int position) {
+    public void onManagmentButtonClick(int position, View v) {
+        GroupModel group = groups.get(position);
+        PopupMenu popup = new PopupMenu(this,v);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch(item.getItemId()){
+                    case R.id.manage:
+                        Intent intent = new Intent(GroupsScreen.this,GroupManagementScreen.class);
+                        intent.putExtra("group_name",group.getName());
+                        startActivity(intent);
+                        //startActivity(new Intent(GroupsScreen.this, GroupManagementScreen.class));
+                        break;
+                    case R.id.leave_group:
+                        groups.remove(group);
+                        recyclerView.setAdapter(groups_screen_adapter);
+                        Toast.makeText(GroupsScreen.this,"opusc",Toast.LENGTH_SHORT).show();
+                        break;
+                }
 
+                return true;
+            }
+        });
+        popup.inflate(R.menu.popup_menu);
+        popup.show();
     }
+
 }

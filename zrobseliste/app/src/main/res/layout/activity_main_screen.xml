@@ -8,15 +8,7 @@
         android:orientation="vertical"
         android:background="@drawable/bgc1">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-             />
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
@@ -24,11 +16,36 @@
             android:layout_height="match_parent">
 
 
+            <Button
+                android:id="@+id/group_code_button"
+                android:layout_width="73dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="346dp"
+                android:text="MMM"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <ImageButton
+                android:id="@+id/deleteAllSelectedButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="284dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/btn_bg"
+                app:srcCompat="@drawable/icon_delete"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <ImageButton
                 android:id="@+id/addListButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="56dp"
+                android:layout_marginTop="96dp"
                 android:background="@drawable/btn_bg"
                 android:onClick="onBtnAddClick"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +59,7 @@
                 android:id="@+id/deleteListButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="56dp"
+                android:layout_marginTop="96dp"
                 android:background="@drawable/btn_bg"
                 android:onClick="onBtnAddClick"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -58,9 +75,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="90dp"
                 android:layout_marginEnd="140dp"
-                android:hint="Listy"
+                android:hint="@string/list"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -95,7 +112,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="355dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="26dp"
                 android:layout_marginBottom="14dp"
                 android:background="@drawable/btn_bg"
                 app:layout_constraintBottom_toTopOf="@+id/bottom_nav"

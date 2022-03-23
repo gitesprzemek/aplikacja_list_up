@@ -20,8 +20,31 @@
             android:id="@+id/check_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tool:text="Sample task"
+            tool:text="Sample tasksssssssssssssssssssssssssss"
+            android:layout_marginTop="7dp"
             android:paddingStart="8dp"
+            android:layout_marginEnd="95dp"
+
+            />
+
+        <TextView
+            android:layout_marginTop="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="przypisano:"
+            android:layout_marginEnd="5dp"
+            android:padding="5dp"
+            />
+        <TextView
+            android:id="@+id/text_view_person_assigned"
+            android:layout_width="82dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="30dp"
+            android:text="osoba prz"
+            android:layout_marginEnd="5dp"
+            android:padding="5dp"
             />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

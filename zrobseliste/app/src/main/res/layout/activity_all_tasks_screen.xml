@@ -8,16 +8,6 @@
         android:orientation="vertical"
         android:background="@drawable/bgc1">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-             />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
@@ -35,6 +25,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/deleteAllSelectedButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/btn_bg"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/icon_delete" />
 
 
             <com.google.android.material.bottomnavigation.BottomNavigationView

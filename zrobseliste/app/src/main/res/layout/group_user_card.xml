@@ -1,0 +1,42 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp"
+    android:layout_marginVertical="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="1dp"
+        android:id="@+id/rel_layout">
+
+        <TextView
+            android:id="@+id/group_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tool:text="usersssssssss"
+            android:layout_marginTop="3dp"
+            android:layout_marginStart="10dp"
+            android:padding="10dp"
+            android:textSize="17sp"
+            android:layout_marginEnd="110dp"
+            />
+        <Button
+            android:id="@+id/delete_user_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="10dp"
+            android:text="usuń"
+            android:textSize="12sp"
+            android:textColor="@color/Red"
+            />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

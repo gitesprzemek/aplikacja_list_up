@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pz.zrobseliste.R;
 
-public class RecyclerItemTouch extends ItemTouchHelper.SimpleCallback {
+public class MainScreenItemTouch extends ItemTouchHelper.SimpleCallback {
 
     private Main_Screen_Adapter_Rec adapter;
 
-    public RecyclerItemTouch(Main_Screen_Adapter_Rec adapter){
+    public MainScreenItemTouch(Main_Screen_Adapter_Rec adapter){
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.adapter = adapter;
 
@@ -36,16 +36,16 @@ public class RecyclerItemTouch extends ItemTouchHelper.SimpleCallback {
         if(direction == ItemTouchHelper.LEFT)
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(adapter.getContext());
-            builder.setTitle("usun Zadanie");
-            builder.setMessage("Czy na pewno chcesz usunac to zadanie ");
-            builder.setPositiveButton("Potwierdz",
+            builder.setTitle(R.string.delete_task);
+            builder.setMessage(R.string.do_you_really_wanna_delete_this_task);
+            builder.setPositiveButton(R.string.accept,
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             adapter.deleteItem(position);
                         }
                     });
-            builder.setNegativeButton("Odrzuc", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(R.string.decline, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                             adapter.notifyItemChanged(viewHolder.getAdapterPosition());
@@ -77,7 +77,7 @@ public class RecyclerItemTouch extends ItemTouchHelper.SimpleCallback {
             }
             else
             {
-                icon = ContextCompat.getDrawable(adapter.getContext(), R.drawable.icon_delete);
+                icon = ContextCompat.getDrawable(adapter.getContext(), R.drawable.icon_delete_swipe);
                 background = new ColorDrawable(Color.RED);
             }
             assert icon != null;

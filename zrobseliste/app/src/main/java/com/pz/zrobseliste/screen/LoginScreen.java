@@ -1,6 +1,8 @@
 package com.pz.zrobseliste.screen;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -11,16 +13,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.pz.zrobseliste.R;
 import com.pz.zrobseliste.models.UserModel;
 
+import java.util.Locale;
+
 public class LoginScreen extends AppCompatActivity {
 
     private UserModel user;
     TextView informationView;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = getSharedPreferences("sharedPrefs",MODE_PRIVATE);
+        setLocale(sharedPreferences.getString("language",""));
         setContentView(R.layout.activity_login);
-
 
         this.user = new UserModel();
     }
@@ -48,8 +54,20 @@ public class LoginScreen extends AppCompatActivity {
 
     public void onBtnRejClick(View view)
     {
-
         startActivity(new Intent(LoginScreen.this, RegistrationScreen.class));
 
     }
+
+    private void setLocale(String lang)
+    {
+
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,
+        getBaseContext().getResources().getDisplayMetrics());
+    }
+
+
 }

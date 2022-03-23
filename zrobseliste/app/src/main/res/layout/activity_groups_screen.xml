@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".screen.GroupsScreen"
     android:background="@drawable/bgc1"
+    app:popupTheme="@style/PopupMenu"
     >
 
     <androidx.recyclerview.widget.RecyclerView
@@ -21,16 +23,18 @@
 
     <Button
         android:id="@+id/add_group_button"
-        android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dodaj grupe"
         android:layout_above="@+id/bottom_nav"
-        android:layout_margin="10dp"
         android:layout_centerHorizontal="true"
-        android:textSize="18sp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
 
-        />
+        android:layout_marginBottom="10dp"
+        android:padding="10dp"
+        android:text="@string/add_group"
+        android:textSize="18sp" />
 
 
 

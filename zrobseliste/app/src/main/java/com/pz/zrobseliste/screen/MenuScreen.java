@@ -25,8 +25,6 @@ public class MenuScreen extends AppCompatActivity implements BottomNavigationVie
     RecyclerView recylerView;
     Menu_Screen_Adapter_Rec recyclerAdapter;
     private ArrayList<MenuModel> options = new ArrayList<>();
-
-
     BottomNavigationView bottom_nav;
 
 
@@ -36,9 +34,9 @@ public class MenuScreen extends AppCompatActivity implements BottomNavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_screen);
         //===========================options====================================
-        options.add(new MenuModel(R.drawable.ic_action_user,1,"Autorzy aplikacji"));
-        options.add(new MenuModel(R.drawable.settings_icon,2,"Ustawienia"));
-        options.add(new MenuModel(R.drawable.logout_icon,3,"Wyloguj"));
+        options.add(new MenuModel(R.drawable.ic_action_user,1,getResources().getString(R.string.about_creators)));
+        options.add(new MenuModel(R.drawable.settings_icon,2,getResources().getString(R.string.settings)));
+        options.add(new MenuModel(R.drawable.logout_icon,3,getResources().getString(R.string.logout)));
 
 
         recylerView = findViewById(R.id.rec_view_menu);
@@ -80,7 +78,7 @@ public class MenuScreen extends AppCompatActivity implements BottomNavigationVie
 
 
     @Override
-    public void onMenuItemClick(int position) {
+    public void onMainMenuItemClick(int position) {
         MenuModel temp;
         temp = options.get(position);
         if(temp.getId()== 1)
@@ -95,7 +93,10 @@ public class MenuScreen extends AppCompatActivity implements BottomNavigationVie
         }
         if(temp.getId()==3)
         {
+            Intent intent = new Intent(MenuScreen.this,LoginScreen.class);
             finish();
+            finish();
+            startActivity(intent);
         }
 
     }

@@ -1,5 +1,5 @@
 package com.pz.zrobseliste.interfaces;
 
 public interface MenuHandlerInterface {
-    void onMenuItemClick(int position);
+    void onMainMenuItemClick(int position);
 }

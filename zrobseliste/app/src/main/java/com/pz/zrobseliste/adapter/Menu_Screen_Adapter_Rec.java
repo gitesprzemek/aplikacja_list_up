@@ -60,7 +60,7 @@ public class Menu_Screen_Adapter_Rec extends RecyclerView.Adapter<Menu_Screen_Ad
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    menuHandlerInterface.onMenuItemClick(getAdapterPosition());
+                    menuHandlerInterface.onMainMenuItemClick(getAdapterPosition());
                 }
             });
 

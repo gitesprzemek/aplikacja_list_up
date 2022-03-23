@@ -13,7 +13,7 @@
         android:id="@+id/text_view_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/informacje_i_preferencje"
+        android:text="@string/informations_and_preferences"
         android:padding="15dp"
         android:textSize="20sp"
         />

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -82,7 +83,7 @@ public class Main_Screen_Adapter_Rec extends RecyclerView.Adapter<Main_Screen_Ad
 
     public void deleteItem(int position){
         ToDoModel item = todoList.get(position);
-        todoList.remove(position);
+        todoList.remove(item);
         notifyItemRemoved(position);
 
     }
@@ -100,11 +101,13 @@ public class Main_Screen_Adapter_Rec extends RecyclerView.Adapter<Main_Screen_Ad
     public static class ViewHolder extends RecyclerView.ViewHolder{
         CheckBox task;
         RelativeLayout rel_layout;
+        TextView text_view_person_assigned;
         ViewHolder(View view)
         {
             super(view);
             rel_layout = view.findViewById(R.id.rel_layout);
             task = view.findViewById(R.id.check_box);
+            text_view_person_assigned = view.findViewById(R.id.text_view_person_assigned);
 
         }
     }

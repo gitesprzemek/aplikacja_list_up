@@ -28,8 +28,9 @@
         <activity android:name=".screen.LoginScreen" />
         <activity android:name=".screen.RegistrationScreen" />
         <activity android:name=".screen.MenuScreen" />
-        <activity android:name=".screen.AboutCreatorsScreen" />
-        <activity android:name=".screen.SettingsScreen" />
+        <activity android:name=".screen.AboutCreatorsScreen" android:parentActivityName=".screen.MenuScreen"/>
+        <activity android:name=".screen.SettingsScreen" android:parentActivityName=".screen.MenuScreen"/>
+        <activity android:name=".screen.GroupManagementScreen" android:parentActivityName=".screen.GroupsScreen"/>
     </application>
 
 </manifest>
