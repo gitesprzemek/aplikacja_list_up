@@ -40,4 +40,12 @@
     <string name="language">Languages</string>
     <string name="polish">Polish</string>
     <string name="english">English</string>
+    <string name="delete_account">delete account</string>
+    <string name="delete_account_text">Do you want to delete your account?</string>
+    <string name="your_tasks">Your Tasks</string>
+    <string name="assign">assign</string>
+    <string name="list_name">list name</string>
+    <string name="enter_list_name">Enter list name</string>
+    <string name="do_you_want_delete_list">Do you want to delete selected list?</string>
+    <string name="do_you_want_leave_group">Do you want to leave group?</string>
 </resources>

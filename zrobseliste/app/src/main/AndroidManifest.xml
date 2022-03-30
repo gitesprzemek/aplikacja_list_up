@@ -31,6 +31,7 @@
         <activity android:name=".screen.AboutCreatorsScreen" android:parentActivityName=".screen.MenuScreen"/>
         <activity android:name=".screen.SettingsScreen" android:parentActivityName=".screen.MenuScreen"/>
         <activity android:name=".screen.GroupManagementScreen" android:parentActivityName=".screen.GroupsScreen"/>
+        <activity android:name=".screen.TasksAsignmentScreen" android:parentActivityName=".screen.MainScreen"/>
     </application>
 
 </manifest>

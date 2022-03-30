@@ -2,6 +2,7 @@ package com.pz.zrobseliste.screen;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,9 +38,15 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
     private RecyclerView recyclerView;
     private Groups_Screen_Adapter_Rec groups_screen_adapter;
 
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
+
     BottomNavigationView bottom_nav;
     Button add_group_button;
 
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String group_code = "group_code";
 
     @Override
 
@@ -153,13 +160,35 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         return true;
     }
 
+    private void buildDialogDelete(GroupModel group) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.do_you_want_leave_group).
+                setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        groups.remove(group);
+                        recyclerView.setAdapter(groups_screen_adapter);
+                    }
+                })
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.create().show();
+
+    }
 
     @Override
     public void onGroupButtonClick(int position) {
         GroupModel group = groups.get(position);
-        Toast.makeText(this,group.getName(),Toast.LENGTH_SHORT).show();
+        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(group_code,group.getGroup_code());
+        editor.commit();
         Intent intent = new Intent(GroupsScreen.this,MainScreen.class);
-        intent.putExtra("group_code",group.getGroup_code());
+
         finish();
         startActivity(intent);
     }
@@ -179,9 +208,8 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                         //startActivity(new Intent(GroupsScreen.this, GroupManagementScreen.class));
                         break;
                     case R.id.leave_group:
-                        groups.remove(group);
-                        recyclerView.setAdapter(groups_screen_adapter);
-                        Toast.makeText(GroupsScreen.this,"opusc",Toast.LENGTH_SHORT).show();
+                        buildDialogDelete(group);
+
                         break;
                 }
 

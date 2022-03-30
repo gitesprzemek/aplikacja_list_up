@@ -39,4 +39,12 @@
     <string name="language">Wybór języka</string>
     <string name="polish">Polski</string>
     <string name="english">Angielski</string>
+    <string name="delete_account">usuń konto</string>
+    <string name="delete_account_text">Czy na pewno chcesz usunąć konto?</string>
+    <string name="your_tasks">Twoje zadania:</string>
+    <string name="assign">Przypisz</string>
+    <string name="list_name">nazwa listy</string>
+    <string name="enter_list_name">Podaj nazwe listy</string>
+    <string name="do_you_want_delete_list">Czy chcesz usunąc wybraną liste?</string>
+    <string name="do_you_want_leave_group">Czy chcesz opuścić grupe?</string>
 </resources>

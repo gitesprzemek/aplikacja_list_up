@@ -38,9 +38,6 @@ public class AboutCreatorsScreen extends AppCompatActivity{
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.about_creators);
 
-
     }
-
-
 
 }

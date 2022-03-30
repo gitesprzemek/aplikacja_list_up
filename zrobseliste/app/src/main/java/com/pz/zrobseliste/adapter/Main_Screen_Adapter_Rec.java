@@ -1,6 +1,7 @@
 package com.pz.zrobseliste.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,10 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pz.zrobseliste.R;
+import com.pz.zrobseliste.interfaces.MainScreenInterface;
 import com.pz.zrobseliste.models.ToDoModel;
+import com.pz.zrobseliste.screen.GroupManagementScreen;
+import com.pz.zrobseliste.screen.GroupsScreen;
 import com.pz.zrobseliste.screen.MainScreen;
 import com.pz.zrobseliste.utils.AddNewTask;
 
@@ -22,9 +26,11 @@ import java.util.List;
 public class Main_Screen_Adapter_Rec extends RecyclerView.Adapter<Main_Screen_Adapter_Rec.ViewHolder>{
     private List<ToDoModel> todoList;
     private MainScreen activity;
+    MainScreenInterface mainScreenInterface;
 
-    public Main_Screen_Adapter_Rec(MainScreen activity){
+    public Main_Screen_Adapter_Rec(MainScreen activity, MainScreenInterface mainScreenInterface){
         this.activity = activity;
+        this.mainScreenInterface=mainScreenInterface;
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
@@ -56,6 +62,12 @@ public class Main_Screen_Adapter_Rec extends RecyclerView.Adapter<Main_Screen_Ad
                 {
                     System.out.println("Wyslij do serwera polecenie ustawienia statusu na 0");
                 }
+            }
+        });
+        holder.text_view_person_assigned.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainScreenInterface.onAssignmentButtonClick(holder.getAdapterPosition());
             }
         });
 
@@ -108,6 +120,7 @@ public class Main_Screen_Adapter_Rec extends RecyclerView.Adapter<Main_Screen_Ad
             rel_layout = view.findViewById(R.id.rel_layout);
             task = view.findViewById(R.id.check_box);
             text_view_person_assigned = view.findViewById(R.id.text_view_person_assigned);
+
 
         }
     }
