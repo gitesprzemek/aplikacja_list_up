@@ -10,9 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.pz.zrobseliste.R;
 import com.pz.zrobseliste.models.UserModel;
 
+import org.json.JSONObject;
+
 public class RegistrationScreen extends AppCompatActivity {
 
     private UserModel user;
+    JSONObject jsonObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +35,9 @@ public class RegistrationScreen extends AppCompatActivity {
         if(passwordField.getText().toString().equals(passwordFieldRepeat.getText().toString()))
         {
             this.user = new UserModel(emailField.getText().toString(),usernameField.getText().toString(),passwordField.getText().toString());
-            System.out.println(user.registrationDatatoJSON().toString());
+            jsonObject = user.registrationDatatoJSON();
+
+            HttpClient client
             informationView.setText("");
             finish();
         }
