@@ -16,7 +16,7 @@ public class UserModel {
         this.email = name;
         this.password = password;
     }
-    public UserModel(String email, String password,String username) {
+    public UserModel(String email,String username,String password) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -64,7 +64,7 @@ public class UserModel {
         try {
             jsonObject = new JSONObject()
                     .put("email", this.getEmail())
-                    .put("username",this.getUsername())
+                    .put("name",this.getUsername())
                     .put("password", this.getPassword());
         } catch (JSONException e) {
             e.printStackTrace();

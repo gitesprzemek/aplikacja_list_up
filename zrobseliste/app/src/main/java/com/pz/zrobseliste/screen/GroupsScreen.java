@@ -4,13 +4,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,7 +25,22 @@ import com.pz.zrobseliste.adapter.Groups_Screen_Adapter_Rec;
 import com.pz.zrobseliste.interfaces.GroupsonClickInterface;
 import com.pz.zrobseliste.models.GroupModel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 //import android.support.v4.app.Fragment;
 
@@ -34,31 +48,91 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
 
     private static final String TAG = "GroupsScreen";
     private static final int NUM_COLUMNS=2;
-    private ArrayList<GroupModel> groups = new ArrayList<>();
+    private ArrayList<GroupModel> groups;
     private RecyclerView recyclerView;
     private Groups_Screen_Adapter_Rec groups_screen_adapter;
+    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-
+    JSONObject jsonObject;
 
     BottomNavigationView bottom_nav;
     Button add_group_button;
+    private OkHttpClient client;
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String group_code = "group_code";
+    public static final String cookie = "cookie";
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups_screen);
 
-        //======================grupy============================================
-        groups.add(new GroupModel(0,"Bazy Danych 1","BD1"));
-        groups.add(new GroupModel(1,"Domownicy","Dom"));
-        groups.add(new GroupModel(2,"Programowanie Zespolowe","PrZ"));
+        //======================grupy http================================
 
+        client = new OkHttpClient().newBuilder()
+                .build();
+        URL url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("weaweg.mywire.org")
+                .port(8080)
+                .addPathSegments("api/users/groups")
+                .build().url();
+
+        Log.d("url",url.toString());
+
+        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie",sharedPreferences.getString(cookie,""))
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+                //Log.d("responebody",response.body().string());
+                Log.d("statuscode", String.valueOf(response.code()));
+                if (response.code() >= 200 && response.code() < 300) {
+
+                    try {
+                        JSONObject json;
+                        final JSONArray data = new JSONArray(response.body().string());
+                        for (int i = 0; i < data.length(); i++) {
+                            json = data.getJSONObject(i);
+                            int id = json.getInt("group_id");
+                            String name = json.getString("name");
+                            String group_id = returngroupcode(json.getString("name"));
+                            groups.add(new GroupModel(id, name, group_id));
+
+                        }
+                        GroupsScreen.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                groups_screen_adapter.setGroups(groups);
+                            }
+                        });
+                        Log.d("grupypoodpowiedzi",groups.toString());
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            }
+        });
+        //==========================grupy adapter===============================================
+        groups = new ArrayList<>();
+        Log.d("grupy",groups.toString());
         recyclerView = findViewById(R.id.groups_rec_view);
         groups_screen_adapter = new Groups_Screen_Adapter_Rec(this,groups,this);
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(NUM_COLUMNS, LinearLayoutManager.VERTICAL);
@@ -78,6 +152,7 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         bottom_nav.setOnNavigationItemSelectedListener(this);
         bottom_nav.setSelectedItemId(R.id.nav_groups);
 
+
     }
 
     private void buildDialog() {
@@ -91,12 +166,78 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                 setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        GroupModel group = new GroupModel();
-                        group.setName(name.getText().toString());
-                        group.setGroup_code(returngroupcode(name.getText().toString()));
-                        group.setGroupID(3);
-                        groups.add(group);
+
+                        client = new OkHttpClient().newBuilder()
+                                .build();
+
+                        URL url = new HttpUrl.Builder()
+                                .scheme("https")
+                                .host("weaweg.mywire.org")
+                                .port(8080)
+                                .addPathSegments("api/groups")
+                                .addQueryParameter("name", name.getText().toString())
+                                .build().url();
+
+                        Log.d("url",url.toString());
+
+                        RequestBody body = RequestBody.create("",null);
+
+                        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                        Request request = new Request.Builder()
+                                .url(url)
+                                .addHeader("Cookie",sharedPreferences.getString(cookie,""))
+                                .put(body)
+                                .build();
+
+                        client.newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                Log.d("statuscode",String.valueOf(response.code()));
+                                if(response.code()>=200 && response.code()<300)
+                                {
+                                    JSONObject json = null;
+                                    try {
+                                        json = new JSONObject(response.body().string());
+                                        int id = json.getInt("group_id");
+                                        String name = json.getString("name");
+                                        String group_id = returngroupcode(json.getString("name"));
+                                        groups.add(new GroupModel(id, name, group_id));
+                                        GroupsScreen.this.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                groups_screen_adapter.setGroups(groups);
+                                            }
+                                        });
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+                                if(response.code()==400)
+                                {
+                                    GroupsScreen.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(GroupsScreen.this, R.string.creating_group_failed,Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }
+                        });
+
+
+
+
                     }
+
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
@@ -204,12 +345,11 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                     case R.id.manage:
                         Intent intent = new Intent(GroupsScreen.this,GroupManagementScreen.class);
                         intent.putExtra("group_name",group.getName());
+                        intent.putExtra("group_id",group.getGroupID());
                         startActivity(intent);
-                        //startActivity(new Intent(GroupsScreen.this, GroupManagementScreen.class));
                         break;
                     case R.id.leave_group:
                         buildDialogDelete(group);
-
                         break;
                 }
 
@@ -219,5 +359,7 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         popup.inflate(R.menu.popup_menu);
         popup.show();
     }
+
+
 
 }

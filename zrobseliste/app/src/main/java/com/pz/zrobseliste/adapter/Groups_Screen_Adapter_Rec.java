@@ -14,9 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.pz.zrobseliste.R;
 import com.pz.zrobseliste.interfaces.GroupsonClickInterface;
 import com.pz.zrobseliste.models.GroupModel;
+import com.pz.zrobseliste.models.ToDoModel1;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Groups_Screen_Adapter_Rec extends RecyclerView.Adapter<Groups_Screen_Adapter_Rec.ViewHolder> {
@@ -68,6 +70,12 @@ public class Groups_Screen_Adapter_Rec extends RecyclerView.Adapter<Groups_Scree
     @Override
     public int getItemCount() {
         return groups.size();
+    }
+
+    public void setGroups(ArrayList<GroupModel> groups)
+    {
+        this.groups = groups;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

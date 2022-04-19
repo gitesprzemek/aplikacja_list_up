@@ -21,6 +21,31 @@
         app:srcCompat="@drawable/logo" />
 
     <EditText
+        android:id="@+id/usernameField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/input"
+        android:drawableLeft="@drawable/ic_action_user"
+        android:drawablePadding="5dp"
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textPersonName"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="#ECECEC"
+        android:textColorHint="#FFECECEC"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.362" />
+
+    <EditText
         android:id="@+id/emailField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -45,30 +70,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.448" />
 
-    <EditText
-        android:id="@+id/usernameField"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
-        android:background="@drawable/input"
-        android:drawableLeft="@drawable/ic_action_user"
-        android:drawablePadding="5dp"
-        android:ems="10"
-        android:hint="@string/username"
-        android:inputType="textPersonName"
-        android:paddingLeft="20dp"
-        android:paddingTop="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp"
-        android:textColor="#ECECEC"
-        android:textColorHint="#FFECECEC"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.362" />
 
     <EditText
 
@@ -130,7 +131,6 @@
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         android:background="@drawable/btn_bg"
-        android:onClick="onBtnZarClick"
         android:text="@string/register"
         android:textColor="#000000"
         android:textSize="16sp"
@@ -153,7 +153,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.696" />
+        app:layout_constraintVertical_bias="0.923" />
 
     <TextView
         android:id="@+id/returnTextView"

@@ -48,4 +48,17 @@
     <string name="enter_list_name">Enter list name</string>
     <string name="do_you_want_delete_list">Do you want to delete selected list?</string>
     <string name="do_you_want_leave_group">Do you want to leave group?</string>
+    <string name="sprawdzanie_hasel">the password doesnt match</string>
+    <string name="do_you_want_delete_group">Do you want to delete group?</string>
+    <string name="registration_successful">registration successful</string>
+    <string name="mail_already_existed">mail alreay existed</string>
+    <string name="wrong_data">wrong data</string>
+    <string name="registration_failed">registration failed</string>
+    <string name="login_successful">login succesfull</string>
+    <string name="login_failed">wrong data</string>
+    <string name="remember_me">remember me</string>
+    <string name="session_time">session timeout</string>
+    <string name="delete_account_info">account deletede</string>
+    <string name="delete_account_info_failed">deleting account failed</string>
+    <string name="creating_group_failed">group name cannot be empty</string>
 </resources>

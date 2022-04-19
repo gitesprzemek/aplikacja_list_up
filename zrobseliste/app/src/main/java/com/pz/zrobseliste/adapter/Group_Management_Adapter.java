@@ -58,7 +58,9 @@ public class Group_Management_Adapter extends RecyclerView.Adapter<Group_Managem
 
     public void setusers(ArrayList<GroupUserModel> users)
     {
+
         this.users = users;
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{

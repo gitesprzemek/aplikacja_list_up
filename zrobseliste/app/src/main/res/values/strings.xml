@@ -47,4 +47,17 @@
     <string name="enter_list_name">Podaj nazwe listy</string>
     <string name="do_you_want_delete_list">Czy chcesz usunąc wybraną liste?</string>
     <string name="do_you_want_leave_group">Czy chcesz opuścić grupe?</string>
+    <string name="sprawdzanie_hasel">Podane hasla roznia sie</string>
+    <string name="do_you_want_delete_group">Czy chcesz usunąc grupe?</string>
+    <string name="registration_successful">rejestracja pomyslna</string>
+    <string name="mail_already_existed">podany mail juz istnieje</string>
+    <string name="wrong_data">podano niewlasciwe dane</string>
+    <string name="registration_failed">nie udalo sie zarejestrowac</string>
+    <string name="login_successful">logowanie pomyslne</string>
+    <string name="login_failed">nieprawidlowe dane</string>
+    <string name="remember_me">nie wylogowuj mnie</string>
+    <string name="session_time">sesja wygasla</string>
+    <string name="delete_account_info">konto zostalo usuniete</string>
+    <string name="delete_account_info_failed">wystąpil błąd przy usuwaniu konta</string>
+    <string name="creating_group_failed">nazwa grupy nie moze byc pusta</string>
 </resources>

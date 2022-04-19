@@ -28,6 +28,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.317" />
 
+    <CheckBox
+        android:id="@+id/check_box_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="7dp"
+        android:text="@string/remember_me"
+        app:layout_constraintBottom_toTopOf="@+id/loginField"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logowanieTextView" />
+
     <EditText
         android:id="@+id/loginField"
         android:layout_width="0dp"
@@ -38,6 +52,8 @@
         android:drawableLeft="@drawable/ic_email"
         android:drawablePadding="5dp"
         android:ems="10"
+        android:text="testowekonto@gmail.com"
+
         android:hint="email"
         android:inputType="textPersonName"
         android:paddingLeft="20dp"
@@ -54,7 +70,7 @@
         app:layout_constraintVertical_bias="0.462" />
 
     <EditText
-
+        android:text="tescik"
         android:id="@+id/passwordField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -80,13 +96,12 @@
         app:layout_constraintVertical_bias="0.553" />
 
     <Button
-        android:id="@+id/przycisklogowania"
+        android:id="@+id/loginbutton"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         android:background="@drawable/btn_bg"
-        android:onClick="onBtnLogClick"
         android:text="@string/log_in"
         android:textColor="#000000"
         android:textSize="16sp"
@@ -108,21 +123,6 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/logo" />
 
-    <TextView
-        android:id="@+id/informationView"
-        android:layout_width="0dp"
-        android:layout_height="29dp"
-
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
-        android:textAlignment="textEnd"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.383" />
 
     <TextView
         android:id="@+id/zmianaHaslaTextView"
