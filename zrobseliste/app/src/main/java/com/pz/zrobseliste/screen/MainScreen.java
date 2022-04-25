@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,12 +30,24 @@ import com.pz.zrobseliste.adapter.Main_Screen_Adapter_Rec;
 import com.pz.zrobseliste.interfaces.DialogCloseListener;
 import com.pz.zrobseliste.interfaces.MainScreenInterface;
 import com.pz.zrobseliste.models.GroupModel;
+import com.pz.zrobseliste.models.ListModel;
 import com.pz.zrobseliste.models.ToDoModel;
 import com.pz.zrobseliste.utils.AddNewTask;
+import com.pz.zrobseliste.utils.CustomHttpBuilder;
 import com.pz.zrobseliste.utils.SwipeListener;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MainScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, DialogCloseListener, MainScreenInterface {
 
@@ -50,16 +63,21 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
     private ImageButton addListButton;
     private ImageButton deleteListButton;
 
+    private OkHttpClient client;
+    private Request request;
+
     RecyclerView tasks_rec_view;
 
-    String[] items = {"lista1","lista2","lista3"};
+    ArrayList<ListModel> items;
     AutoCompleteTextView autoCompleteTxt;
-    ArrayAdapter<String> adapterItems;
+    ArrayAdapter<ListModel> adapterItems;
     BottomNavigationView bottom_nav;
 
     SharedPreferences sharedPreferences;
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String group_code = "group_code";
+    public static final String group_id = "group_id";
+    public static final String cookie = "cookie";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,13 +145,22 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
         bottom_nav.setSelectedItemId(R.id.nav_main_screen);
 
         //------------------ drop down list----------------------------
+        items = new ArrayList<>();
+        items.add(new ListModel(1,"lista1"));
+        items.add(new ListModel(1,"lista1"));
+
+
         autoCompleteTxt = findViewById(R.id.auto_complete_txt);
-        adapterItems = new ArrayAdapter<String>(this, R.layout.list_item, items);
+        adapterItems = new ArrayAdapter<ListModel>(this, R.layout.list_item, items);
+
         autoCompleteTxt.setAdapter(adapterItems);
+        items.add(new ListModel(1,"lista1"));
+
 
         autoCompleteTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 String item = parent.getItemAtPosition(position).toString();
                 if(item.equals("lista1"))
 
@@ -249,9 +276,63 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
                 setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        client = CustomHttpBuilder.SSL().build();
+                        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
 
+                        int GroupID = sharedPreferences.getInt(group_id,0);
+                        String g_id = "" + GroupID;
+
+                        URL url = new HttpUrl.Builder()
+                                .scheme("https")
+                                .host("weaweg.mywire.org")
+                                .port(8080)
+                                .addPathSegments("api/lists")
+                                .addQueryParameter("groupId",g_id)
+                                .addQueryParameter("name",name.getText().toString())
+                                .build().url();
+
+                        Log.d("url",url.toString());
+
+                        RequestBody body = RequestBody.create("",null);
+
+
+                        request = new Request.Builder()
+                                .url(url)
+                                .addHeader("Cookie",sharedPreferences.getString(cookie,""))
+                                .put(body)
+                                .build();
+
+                        client.newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                Log.d("statuscode", String.valueOf(response.code()));
+                                Log.d("cialo odpowiedzi",response.body().string());
+                                MainScreen.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (response.code() >= 200 && response.code() < 300) {
+
+                                        }
+                                        if(response.code() == 400)
+                                        {
+                                            Toast.makeText(MainScreen.this, R.string.invalid_list_name,Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+
+
+                            }
+                        });
                     }
                 })
+
+
+
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

@@ -24,6 +24,7 @@ import com.pz.zrobseliste.R;
 import com.pz.zrobseliste.adapter.Groups_Screen_Adapter_Rec;
 import com.pz.zrobseliste.interfaces.GroupsonClickInterface;
 import com.pz.zrobseliste.models.GroupModel;
+import com.pz.zrobseliste.utils.CustomHttpBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +64,9 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String group_code = "group_code";
+    public static final String group_id = "group_id";
     public static final String cookie = "cookie";
+    public static final String useremail= "useremail";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +75,8 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
 
         //======================grupy http================================
 
-        client = new OkHttpClient().newBuilder()
-                .build();
+        client = CustomHttpBuilder.SSL().build();
+
         URL url = new HttpUrl.Builder()
                 .scheme("https")
                 .host("weaweg.mywire.org")
@@ -167,8 +170,7 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        client = new OkHttpClient().newBuilder()
-                                .build();
+                        client = CustomHttpBuilder.SSL().build();
 
                         URL url = new HttpUrl.Builder()
                                 .scheme("https")
@@ -205,8 +207,8 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                                         json = new JSONObject(response.body().string());
                                         int id = json.getInt("group_id");
                                         String name = json.getString("name");
-                                        String group_id = returngroupcode(json.getString("name"));
-                                        groups.add(new GroupModel(id, name, group_id));
+                                        String group_code = returngroupcode(json.getString("name"));
+                                        groups.add(new GroupModel(id, name, group_code));
                                         GroupsScreen.this.runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -232,9 +234,6 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                                 }
                             }
                         });
-
-
-
 
                     }
 
@@ -307,8 +306,63 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                 setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        groups.remove(group);
-                        recyclerView.setAdapter(groups_screen_adapter);
+                        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                        String email = sharedPreferences.getString(useremail,"");
+                        int id = group.getGroupID();
+                        client = CustomHttpBuilder.SSL().build();
+
+                        URL url = new HttpUrl.Builder()
+                                .scheme("https")
+                                .host("weaweg.mywire.org")
+                                .port(8080)
+                                .addPathSegments("api/groups/" + id)
+                                .addQueryParameter("email",email)
+                                .build().url();
+
+                        Log.d("url", url.toString());
+
+                        //body = RequestBody.create("", null);
+
+                        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                        Request request = new Request.Builder()
+                                .url(url)
+                                .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
+                                .delete()
+                                .build();
+                        client.newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                Log.d("statuscode",String.valueOf(response.code()));
+
+                                if(response.code()>=200 && response.code()<300)
+                                {
+                                    GroupsScreen.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            groups.remove(group);
+                                            groups_screen_adapter.setGroups(groups);
+                                        }
+                                    });
+
+                                }
+                                if(response.code()==409)
+                                {
+                                    GroupsScreen.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(GroupsScreen.this, R.string.owner_leave_group_failed,Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }
+                        });
+
+
                     }
                 })
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -327,6 +381,7 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(group_code,group.getGroup_code());
+        editor.putInt(group_id,group.getGroupID());
         editor.commit();
         Intent intent = new Intent(GroupsScreen.this,MainScreen.class);
 
@@ -346,6 +401,7 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                         Intent intent = new Intent(GroupsScreen.this,GroupManagementScreen.class);
                         intent.putExtra("group_name",group.getName());
                         intent.putExtra("group_id",group.getGroupID());
+                        Log.d("group_id", String.valueOf(group.getGroupID()));
                         startActivity(intent);
                         break;
                     case R.id.leave_group:

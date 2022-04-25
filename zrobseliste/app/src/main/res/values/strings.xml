@@ -58,6 +58,11 @@
     <string name="remember_me">nie wylogowuj mnie</string>
     <string name="session_time">sesja wygasla</string>
     <string name="delete_account_info">konto zostalo usuniete</string>
-    <string name="delete_account_info_failed">wystąpil błąd przy usuwaniu konta</string>
-    <string name="creating_group_failed">nazwa grupy nie moze byc pusta</string>
+    <string name="delete_account_info_failed">wystąpił błąd przy usuwaniu konta</string>
+    <string name="creating_group_failed">nazwa grupy nie może byc pusta</string>
+    <string name="invalid_email">niepoprawny email</string>
+    <string name="delete_user_failed">nie mozna usunąc właściciela</string>
+    <string name="delete_group_failed">tylko właściciel może usunąć grupe</string>
+    <string name="owner_leave_group_failed">wlaściciel nie może opuścić grupy</string>
+    <string name="invalid_list_name">niewłaściwa nazwa grupy</string>
 </resources>

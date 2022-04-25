@@ -1,5 +1,6 @@
 package com.pz.zrobseliste.screen;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import com.pz.zrobseliste.adapter.Menu_Screen_Adapter_Rec;
 import com.pz.zrobseliste.interfaces.MenuHandlerInterface;
 import com.pz.zrobseliste.models.GroupModel;
 import com.pz.zrobseliste.models.MenuModel;
+import com.pz.zrobseliste.utils.CustomHttpBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,12 +51,15 @@ public class MenuScreen extends AppCompatActivity implements BottomNavigationVie
     BottomNavigationView bottom_nav;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    TextView text_view_user;
 
     public static final String cookie = "cookie";
     public static final String checkboxstate = "checkboxstate";
     public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String useremail= "useremail";
 
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+
 
     @Override
 
@@ -61,6 +67,11 @@ public class MenuScreen extends AppCompatActivity implements BottomNavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_screen);
         //===========================options====================================
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        text_view_user = findViewById(R.id.text_view_user);
+        text_view_user.setText(sharedPreferences.getString(useremail,""));
+        text_view_user.setTextColor(this.getResources().getColor(R.color.teal_200));
+        //==========================================================================
         options.add(new MenuModel(R.drawable.ic_action_user,1,getResources().getString(R.string.about_creators)));
         options.add(new MenuModel(R.drawable.settings_icon,2,getResources().getString(R.string.settings)));
         options.add(new MenuModel(R.drawable.icon_delete_account,3,getResources().getString(R.string.delete_account)));
@@ -86,8 +97,7 @@ public class MenuScreen extends AppCompatActivity implements BottomNavigationVie
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        OkHttpClient client = new OkHttpClient().newBuilder()
-                                .build();
+                        OkHttpClient client = CustomHttpBuilder.SSL().build();
 
                         String url = "https://weaweg.mywire.org:8080/api/users/self";
                         sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
@@ -196,8 +206,7 @@ public class MenuScreen extends AppCompatActivity implements BottomNavigationVie
         }
         if(temp.getId()==4)
         {
-            OkHttpClient client = new OkHttpClient().newBuilder()
-                    .build();
+            OkHttpClient client = CustomHttpBuilder.SSL().build();
             jsonObject = new JSONObject();
             try {
                 jsonObject.put("zadanie","wyloguj");
@@ -232,6 +241,7 @@ public class MenuScreen extends AppCompatActivity implements BottomNavigationVie
                         sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
                         editor = sharedPreferences.edit();
                         editor.putString(cookie,"");
+                        editor.putString(useremail,"");
                         editor.putBoolean(checkboxstate,false);
                         editor.commit();
 

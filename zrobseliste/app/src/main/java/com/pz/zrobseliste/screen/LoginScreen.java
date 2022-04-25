@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.pz.zrobseliste.R;
 import com.pz.zrobseliste.models.UserModel;
+import com.pz.zrobseliste.utils.CustomHttpBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,9 +68,7 @@ public class LoginScreen extends AppCompatActivity {
     private Button loginbutton;
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String cookie = "cookie";
-    public static final String usernameshared = "usernameshared";
-    public static final String passwordshared = "passwordshared";
-    public static final String emailshared = "emailshared";
+    public static final String useremail= "useremail";
 
 
 
@@ -111,39 +110,14 @@ public class LoginScreen extends AppCompatActivity {
     }
 
     public void onBtnLogClick(View view) {
-
-        this.user = new UserModel(loginField.getText().toString(),passwordField.getText().toString());
+        String login = loginField.getText().toString();
+        this.user = new UserModel(login,passwordField.getText().toString());
         jsonObject = user.loginDatatoJSON();
 
 
             //===================================user login==============================================
-        SSLContext sslContext;
-        TrustManager[] trustManagers;
-        try {
-            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keyStore.load(null, null);
-            InputStream certInputStream = getAssets().open("server.pem");
-            BufferedInputStream bis = new BufferedInputStream(certInputStream);
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-            while (bis.available() > 0) {
-                Certificate cert = certificateFactory.generateCertificate(bis);
-                keyStore.setCertificateEntry("www.example.com", cert);
-            }
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(keyStore);
-            trustManagers = trustManagerFactory.getTrustManagers();
-            sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustManagers, null);
-        } catch (Exception e) {
-            e.printStackTrace(); //TODO replace with real exception handling tailored to your needs
-            return;
-        }
 
-
-        OkHttpClient client = new OkHttpClient().newBuilder()
-                .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustManagers[0])
-                .build();
-
+        OkHttpClient client = CustomHttpBuilder.SSL().build();
 
             String url = "https://weaweg.mywire.org:8080/api/users/login";
 
@@ -172,6 +146,7 @@ public class LoginScreen extends AppCompatActivity {
                                     sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
                                     editor = sharedPreferences.edit();
                                     editor.putString(cookie,response.headers().get("Set-Cookie"));
+                                    editor.putString(useremail,login);
                                     editor.commit();
 
                                     Log.d("loginciasteczkoinfo",sharedPreferences.getString(cookie,""));

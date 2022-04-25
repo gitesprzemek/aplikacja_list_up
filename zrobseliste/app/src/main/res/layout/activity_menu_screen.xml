@@ -10,13 +10,25 @@
     >
 
     <TextView
+        android:id="@+id/text_view_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="17sp"
+        android:text="unknown"
+        android:layout_marginTop="5dp"
+        android:textAlignment="textEnd"
+
+        />
+
+    <TextView
         android:id="@+id/text_view_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/informations_and_preferences"
+        android:layout_below="@+id/text_view_user"
         android:padding="15dp"
-        android:textSize="20sp"
-        />
+        android:text="@string/informations_and_preferences"
+        android:textSize="20sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rec_view_menu"

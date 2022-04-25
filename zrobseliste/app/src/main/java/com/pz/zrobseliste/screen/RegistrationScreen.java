@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.pz.zrobseliste.R;
 import com.pz.zrobseliste.models.UserModel;
+import com.pz.zrobseliste.utils.CustomHttpBuilder;
 
 import org.json.JSONObject;
 
@@ -75,8 +76,7 @@ public class RegistrationScreen extends AppCompatActivity {
             jsonObject = user.registrationDatatoJSON();
             //==================================connection===========================================
 
-            OkHttpClient client = new OkHttpClient().newBuilder()
-                .build();
+            OkHttpClient client = CustomHttpBuilder.SSL().build();
 
             String url = "https://weaweg.mywire.org:8080/api/users/register";
 
@@ -102,6 +102,7 @@ public class RegistrationScreen extends AppCompatActivity {
                                     if(response.code()>=200 && response.code()<=300)
                                     {
                                         Toast.makeText(RegistrationScreen.this, R.string.registration_successful,Toast.LENGTH_SHORT).show();
+                                        finish();
                                         //informationView.setText(response.headers().toString());
                                     }// 403 status jesli istnieje ktos o takim mailu
                                     //400 bad request przy problemie z wprowadzanymi danymi

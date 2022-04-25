@@ -3,8 +3,6 @@ package com.pz.zrobseliste.models;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 public class GroupModel {
 
     private int groupID;
