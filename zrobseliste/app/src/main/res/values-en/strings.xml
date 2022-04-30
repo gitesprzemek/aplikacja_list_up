@@ -66,4 +66,5 @@
     <string name="delete_group_failed">only owner can delete group</string>
     <string name="owner_leave_group_failed">owner cant leave group</string>
     <string name="invalid_list_name">invalid list name</string>
+    <string name="empty_list">cannot add task to empty list</string>
 </resources>

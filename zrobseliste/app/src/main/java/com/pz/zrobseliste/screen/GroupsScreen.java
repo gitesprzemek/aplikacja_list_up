@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -253,24 +254,25 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         String []arr = g_code.split(" ");
         if(arr.length==1){
             String []array = arr[0].split("");
+            new_g_code=new_g_code + array[0];
             new_g_code=new_g_code + array[1];
             new_g_code=new_g_code + array[2];
-            new_g_code=new_g_code + array[3];
+            System.out.println(Arrays.toString(array));
         }
         if(arr.length==2){
             String []array = arr[0].split("");
+            new_g_code=new_g_code + array[0];
             new_g_code=new_g_code + array[1];
-            new_g_code=new_g_code + array[2];
             array = arr[1].split("");
-            new_g_code=new_g_code + array[1];
+            new_g_code=new_g_code + array[0];
         }
         if(arr.length>2){
             String []array = arr[0].split("");
-            new_g_code=new_g_code + array[1];
+            new_g_code=new_g_code + array[0];
             array = arr[1].split("");
-            new_g_code=new_g_code + array[1];
+            new_g_code=new_g_code + array[0];
             array = arr[2].split("");
-            new_g_code=new_g_code + array[1];
+            new_g_code=new_g_code + array[0];
         }
 
         return new_g_code;
@@ -406,6 +408,13 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                         break;
                     case R.id.leave_group:
                         buildDialogDelete(group);
+                        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                        if(group.getGroup_code()==sharedPreferences.getString(group_code,"")&& group.getGroupID()==sharedPreferences.getInt(group_id,0)) {
+                            editor = sharedPreferences.edit();
+                            editor.putString(group_code, "");
+                            editor.putInt(group_id,0);
+                            editor.commit();
+                        }
                         break;
                 }
 

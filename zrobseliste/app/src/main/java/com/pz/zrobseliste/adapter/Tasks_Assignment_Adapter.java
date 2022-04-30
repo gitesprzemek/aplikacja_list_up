@@ -53,6 +53,7 @@ public class Tasks_Assignment_Adapter extends RecyclerView.Adapter<Tasks_Assignm
     public void setusers(ArrayList<GroupUserModel> users)
     {
         this.users = users;
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{

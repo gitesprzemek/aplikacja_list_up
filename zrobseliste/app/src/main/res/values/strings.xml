@@ -65,4 +65,5 @@
     <string name="delete_group_failed">tylko właściciel może usunąć grupe</string>
     <string name="owner_leave_group_failed">wlaściciel nie może opuścić grupy</string>
     <string name="invalid_list_name">niewłaściwa nazwa grupy</string>
+    <string name="empty_list">nie mozna dodac zadania bez listy</string>
 </resources>

@@ -1,10 +1,20 @@
 package com.pz.zrobseliste.models;
 
 public class ToDoModel1 {
-    private int id, status;
+    private int id;
+    private boolean status;
     private String task;
     private String group;
 
+    public ToDoModel1() {
+    }
+
+    public ToDoModel1(int id, boolean status, String task, String group) {
+        this.id = id;
+        this.status = status;
+        this.task = task;
+        this.group = group;
+    }
 
     public int getId() {
         return id;
@@ -14,11 +24,11 @@ public class ToDoModel1 {
         this.id = id;
     }
 
-    public int getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 

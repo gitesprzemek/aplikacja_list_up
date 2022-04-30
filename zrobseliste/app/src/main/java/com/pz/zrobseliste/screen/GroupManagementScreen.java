@@ -65,6 +65,7 @@ public class GroupManagementScreen extends AppCompatActivity implements GroupMan
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String group_code = "group_code";
     public static final String cookie = "cookie";
+    public static final String group_id = "group_id";
 
 
 
@@ -290,9 +291,22 @@ public class GroupManagementScreen extends AppCompatActivity implements GroupMan
                                     public void run() {
                                         if(response.code()>=200 && response.code()<300)
                                         {
+                                            sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                                            if(groupid==sharedPreferences.getInt(group_id,0))
+                                            {
+                                                editor = sharedPreferences.edit();
+                                                editor.putString(group_code, "");
+                                                editor.putInt(group_id,0);
+                                                editor.commit();
+
+
+                                            }
+
                                             finish();
                                             finish();
                                             startActivity(new Intent(GroupManagementScreen.this, GroupsScreen.class));
+
+
                                         }
 
                                         if(response.code()==403)
