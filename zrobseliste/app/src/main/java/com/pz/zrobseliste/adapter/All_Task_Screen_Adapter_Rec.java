@@ -42,6 +42,7 @@ public class All_Task_Screen_Adapter_Rec extends RecyclerView.Adapter<All_Task_S
     private AllTasksScreen activity;
     AllTaskScreenInterface allTaskScreenInterface;
 
+    private Context context;
     private OkHttpClient client;
     private Request request;
     SharedPreferences sharedPreferences;
@@ -49,8 +50,9 @@ public class All_Task_Screen_Adapter_Rec extends RecyclerView.Adapter<All_Task_S
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String cookie = "cookie";
 
-    public All_Task_Screen_Adapter_Rec(AllTasksScreen activity,AllTaskScreenInterface allTaskScreenInterface){
+    public All_Task_Screen_Adapter_Rec(AllTasksScreen activity,List<ToDoModel1> todoList,AllTaskScreenInterface allTaskScreenInterface){
         this.activity = activity;
+        this.todoList = todoList;
         this.allTaskScreenInterface = allTaskScreenInterface;
     }
 
@@ -72,91 +74,12 @@ public class All_Task_Screen_Adapter_Rec extends RecyclerView.Adapter<All_Task_S
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
                 {
-                    sharedPreferences = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                    client = CustomHttpBuilder.SSL().build();
-                    String task_id = "" + item.getId();
-                    String text = "" + item.getTask();
-                    String status_id = "" + true;
-
-                    URL url = new HttpUrl.Builder()
-                            .scheme("https")
-                            .host("weaweg.mywire.org")
-                            .port(8080)
-                            .addPathSegments("api/tasks/"+task_id)
-                            .addQueryParameter("status",status_id)
-                            .addQueryParameter("desc",text)
-                            .build().url();
-
-                    Log.d("url", url.toString());
-
-                    RequestBody body = RequestBody.create("",null);
-
-                    Request request = new Request.Builder()
-                            .url(url)
-                            .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
-                            .patch(body)
-                            .build();
-                    client.newCall(request).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                            System.out.println("nie udalo sie zmienic statusu");
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                            Log.d("status code : task status", String.valueOf(response.code()));
-                            if(response.code()>=200 && response.code()<300)
-                            {
-                                Log.d("resposne body status task", response.body().string());
-                            }
-                        }
-                    });
+                    setCHecked(false,item);
 
                 }
                 else
                 {
-                    sharedPreferences = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                    client = CustomHttpBuilder.SSL().build();
-                    String task_id = "" + item.getId();
-                    String text = "" + item.getTask();
-                    String status_id = "" + false;
-
-                    URL url = new HttpUrl.Builder()
-                            .scheme("https")
-                            .host("weaweg.mywire.org")
-                            .port(8080)
-                            .addPathSegments("api/tasks/"+task_id)
-                            .addQueryParameter("status",status_id)
-                            .addQueryParameter("desc",text)
-                            .build().url();
-
-                    Log.d("url", url.toString());
-
-                    RequestBody body = RequestBody.create("",null);
-
-                    Request request = new Request.Builder()
-                            .url(url)
-                            .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
-                            .patch(body)
-                            .build();
-                    client.newCall(request).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                            System.out.println("nie udalo sie zmienic statusu");
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                            Log.d("status code : task status", String.valueOf(response.code()));
-                            if(response.code()>=200 && response.code()<300)
-                            {
-                                Log.d("resposne body status task", response.body().string());
-                            }
-                        }
-                    });
-                    System.out.println("Wyslij do serwera polecenie ustawienia statusu na 0");
+                    setUnCHecked(false,item);
                 }
             }
         });
@@ -210,6 +133,96 @@ public class All_Task_Screen_Adapter_Rec extends RecyclerView.Adapter<All_Task_S
             task = view.findViewById(R.id.check_box);
             button = view.findViewById(R.id.button);
         }
+    }
+
+    public void setCHecked(Boolean repeat, ToDoModel1 item)
+    {
+        sharedPreferences = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        client = CustomHttpBuilder.SSL().build();
+        String task_id = "" + item.getId();
+        String text = "" + item.getTask();
+        String status_id = "" + true;
+
+        URL url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("weaweg.mywire.org")
+                .port(8080)
+                .addPathSegments("api/tasks/"+task_id)
+                .addQueryParameter("status",status_id)
+                .addQueryParameter("desc",text)
+                .build().url();
+
+        Log.d("url", url.toString());
+
+        RequestBody body = RequestBody.create("",null);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
+                .patch(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                System.out.println("nie udalo sie zmienic statusu");
+                if(!repeat)setCHecked(true,item);
+                if(repeat)e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("status code : task status", String.valueOf(response.code()));
+                if(response.code()>=200 && response.code()<300)
+                {
+                    Log.d("resposne body status task", response.body().string());
+                }
+            }
+        });
+    }
+    public void setUnCHecked(Boolean repeat, ToDoModel1 item)
+    {
+        sharedPreferences = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        client = CustomHttpBuilder.SSL().build();
+        String task_id = "" + item.getId();
+        String text = "" + item.getTask();
+        String status_id = "" + false;
+
+        URL url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("weaweg.mywire.org")
+                .port(8080)
+                .addPathSegments("api/tasks/"+task_id)
+                .addQueryParameter("status",status_id)
+                .addQueryParameter("desc",text)
+                .build().url();
+
+        Log.d("url", url.toString());
+
+        RequestBody body = RequestBody.create("",null);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
+                .patch(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                System.out.println("nie udalo sie zmienic statusu");
+                if(!repeat)setUnCHecked(true,item);
+                if(repeat)e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("status code : task status", String.valueOf(response.code()));
+                if(response.code()>=200 && response.code()<300)
+                {
+                    Log.d("resposne body status task", response.body().string());
+                }
+            }
+        });
+        System.out.println("Wyslij do serwera polecenie ustawienia statusu na 0");
     }
 
 }

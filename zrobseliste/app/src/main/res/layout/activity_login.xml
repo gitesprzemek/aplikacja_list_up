@@ -52,7 +52,6 @@
         android:drawableLeft="@drawable/ic_email"
         android:drawablePadding="5dp"
         android:ems="10"
-        android:text="testowekonto@gmail.com"
 
         android:hint="email"
         android:inputType="textPersonName"
@@ -70,7 +69,6 @@
         app:layout_constraintVertical_bias="0.462" />
 
     <EditText
-        android:text="tescik"
         android:id="@+id/passwordField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -112,6 +110,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.724" />
 
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="305dp"
@@ -120,9 +119,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.005"
         app:srcCompat="@drawable/logo" />
-
 
     <TextView
         android:id="@+id/zmianaHaslaTextView"

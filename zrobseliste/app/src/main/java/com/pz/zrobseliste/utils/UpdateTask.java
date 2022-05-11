@@ -131,48 +131,7 @@ public class UpdateTask extends BottomSheetDialogFragment {
                 String text = newTaskText.getText().toString();
                 if(finalIsUpdate)
                 {
-                    sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                    client = CustomHttpBuilder.SSL().build();
-                    String task_id = "" + bundle.getInt("taks_id");
-                    String status_id = "" + bundle.getBoolean("task_status");
-
-
-                    URL url = new HttpUrl.Builder()
-                            .scheme("https")
-                            .host("weaweg.mywire.org")
-                            .port(8080)
-                            .addPathSegments("api/tasks/"+task_id)
-                            .addQueryParameter("status",status_id)
-                            .addQueryParameter("desc",text)
-                            .build().url();
-
-                    Log.d("url", url.toString());
-
-                    RequestBody body = RequestBody.create("",null);
-
-                    Request request = new Request.Builder()
-                            .url(url)
-                            .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
-                            .patch(body)
-                            .build();
-
-                    client.newCall(request).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                            Log.d("status code update task",String.valueOf(response.code()));
-                            if(response.code()>= 200 & response.code() > 300)
-                            {
-                                Log.d("resposne body update task",response.body().string());
-                            }
-                        }
-                    });
-
-                    System.out.println("task updated");
+                    updateTask(false,text,bundle);
                 }
                 dismiss();
             }
@@ -191,5 +150,52 @@ public class UpdateTask extends BottomSheetDialogFragment {
         {
             ((DialogCloseListener)activity).handleDialogClose(dialog);
         }
+    }
+
+    public void updateTask(Boolean repeat,String text, Bundle bundle)
+    {
+        sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        client = CustomHttpBuilder.SSL().build();
+        String task_id = "" + bundle.getInt("taks_id");
+        String status_id = "" + bundle.getBoolean("task_status");
+
+
+        URL url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("weaweg.mywire.org")
+                .port(8080)
+                .addPathSegments("api/tasks/"+task_id)
+                .addQueryParameter("status",status_id)
+                .addQueryParameter("desc",text)
+                .build().url();
+
+        Log.d("url", url.toString());
+
+        RequestBody body = RequestBody.create("",null);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
+                .patch(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if(!repeat)updateTask(true,text,bundle);
+                if(repeat)e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("status code update task",String.valueOf(response.code()));
+                if(response.code()>= 200 & response.code() > 300)
+                {
+                    Log.d("resposne body update task",response.body().string());
+                }
+            }
+        });
+
+        System.out.println("task updated");
     }
 }

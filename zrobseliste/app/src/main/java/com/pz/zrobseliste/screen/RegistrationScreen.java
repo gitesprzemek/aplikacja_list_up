@@ -38,7 +38,6 @@ public class RegistrationScreen extends AppCompatActivity {
     private UserModel user;
     JSONObject jsonObject;
     private Button registerButton;
-    private TextView informationView;
     private EditText emailField;
     private EditText usernameField;
     private EditText passwordField;
@@ -50,7 +49,6 @@ public class RegistrationScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        informationView = findViewById(R.id.informationView);
         emailField = findViewById(R.id.emailField);
         usernameField = findViewById(R.id.usernameField);
         passwordField = findViewById(R.id.passwordField);
@@ -67,13 +65,22 @@ public class RegistrationScreen extends AppCompatActivity {
     }
     public void onBtnZarClick(View view)
     {
-
-
-        if(passwordField.getText().toString().equals(passwordFieldRepeat.getText().toString()))
-        {
-            informationView.setText("");
-            this.user = new UserModel(emailField.getText().toString(),usernameField.getText().toString(),passwordField.getText().toString());
+        if(passwordField.getText().toString().equals(passwordFieldRepeat.getText().toString())) {
+            this.user = new UserModel(emailField.getText().toString(), usernameField.getText().toString(), passwordField.getText().toString());
             jsonObject = user.registrationDatatoJSON();
+            registration(false,jsonObject);
+        }
+        else
+        {
+            Toast.makeText(RegistrationScreen.this, R.string.sprawdzanie_hasel,Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void registration(Boolean repeat,JSONObject jsonObject)
+    {
+
+
             //==================================connection===========================================
 
             OkHttpClient client = CustomHttpBuilder.SSL().build();
@@ -81,59 +88,53 @@ public class RegistrationScreen extends AppCompatActivity {
             String url = "https://weaweg.mywire.org:8080/api/users/register";
 
             RequestBody body = RequestBody.create(String.valueOf(jsonObject),JSON);
-            informationView.setText(String.valueOf(jsonObject));
 
             Request request = new Request.Builder()
                     .url(url)
                     .put(body)
                     .build();
 
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                            e.printStackTrace();
-                    }
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    if(!repeat)registration(false,jsonObject);
+                    if(repeat)e.printStackTrace();
+                }
 
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                            RegistrationScreen.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if(response.code()>=200 && response.code()<=300)
-                                    {
-                                        Toast.makeText(RegistrationScreen.this, R.string.registration_successful,Toast.LENGTH_SHORT).show();
-                                        finish();
-                                        //informationView.setText(response.headers().toString());
-                                    }// 403 status jesli istnieje ktos o takim mailu
-                                    //400 bad request przy problemie z wprowadzanymi danymi
-                                    else if(response.code()==403)
-                                    {
-                                        Toast.makeText(RegistrationScreen.this, R.string.mail_already_existed,Toast.LENGTH_SHORT).show();
-                                        //informationView.setText("nie udalo sie zarejestrowac");
-                                    }
-                                    else if(response.code()==400)
-                                    {
-                                        Toast.makeText(RegistrationScreen.this, R.string.wrong_data,Toast.LENGTH_SHORT).show();
-                                        //informationView.setText("nie udalo sie zarejestrowac");
-                                    }
-                                    else
-                                    {
-                                        Toast.makeText(RegistrationScreen.this, R.string.registration_failed,Toast.LENGTH_SHORT).show();
-                                    }
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    RegistrationScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(response.code()>=200 && response.code()<=300)
+                            {
+                                Toast.makeText(RegistrationScreen.this, R.string.registration_successful,Toast.LENGTH_SHORT).show();
+                                finish();
+                                //informationView.setText(response.headers().toString());
+                            }// 403 status jesli istnieje ktos o takim mailu
+                            //400 bad request przy problemie z wprowadzanymi danymi
+                            else if(response.code()==403)
+                            {
+                                Toast.makeText(RegistrationScreen.this, R.string.mail_already_existed,Toast.LENGTH_SHORT).show();
+                                //informationView.setText("nie udalo sie zarejestrowac");
+                            }
+                            else if(response.code()==400)
+                            {
+                                Toast.makeText(RegistrationScreen.this, R.string.wrong_data,Toast.LENGTH_SHORT).show();
+                                //informationView.setText("nie udalo sie zarejestrowac");
+                            }
+                            else
+                            {
+                                Toast.makeText(RegistrationScreen.this, R.string.registration_failed,Toast.LENGTH_SHORT).show();
+                            }
 
-                                }
+                        }
 
-                            });
-                    }
-                });
-        }
-        else
-        {
-            informationView.setText(R.string.sprawdzanie_hasel);
+                    });
+                }
+            });
         }
 
-
-    }
 
     public void onBtnRetClick(View view)
     {

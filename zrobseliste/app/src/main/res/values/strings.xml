@@ -66,4 +66,5 @@
     <string name="owner_leave_group_failed">wlaściciel nie może opuścić grupy</string>
     <string name="invalid_list_name">niewłaściwa nazwa grupy</string>
     <string name="empty_list">nie mozna dodac zadania bez listy</string>
+    <string name="loading_data">nie udalo sie wczytac danych, przelacz ekrany</string>
 </resources>

@@ -81,7 +81,140 @@ public class GroupManagementScreen extends AppCompatActivity implements GroupMan
         //users.add(new GroupUserModel("Uzytkownik drugi"));
         //users.add(new GroupUserModel("Uzytkownik trzeci"));
         //users.add(new GroupUserModel("Uzytkownik czwarty"));
+
+        //=================================end getting users===============================
+        recylerView = findViewById(R.id.rec_view_group_management);
+        recyclerAdapter = new Group_Management_Adapter(this);
+        recylerView.setLayoutManager(new LinearLayoutManager(this));
+        recylerView.setAdapter(recyclerAdapter);
+        recyclerAdapter.setusers(users);
         //=================================getting users==================================
+        getUsers(false);
+
+        //=========================add_member==============================
+        member = findViewById(R.id.edit_text_new_member);
+        addMember = findViewById(R.id.button_add_member);
+
+        addMember.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = member.getText().toString();
+                //=========================connection==================================
+                adduser(false,email);
+            }
+        });
+
+
+        //======================tolbar========================================
+        Toolbar toolbar = findViewById(R.id.toolbar_management);
+        setSupportActionBar(toolbar);
+        String name = getIntent().getStringExtra("group_name");
+        getSupportActionBar().setTitle(name);
+        //===========================delete group=============================
+        deleteGroup = findViewById(R.id.button_delete_group);
+        deleteGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buildDialogDelete();
+            }
+        });
+    }
+
+    private void buildDialogDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.do_you_want_delete_group).
+                setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteGroup(false);
+
+                    }
+                })
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.create().show();
+
+    }
+
+    @Override
+    public void onDeleteUserClick(int position) {
+        deleteUser(false,position);
+
+
+    }
+
+    public void deleteUser(Boolean repeat, int position)
+    {
+        GroupUserModel user = users.get(position);
+        Log.d("email",user.getEmail());
+
+        String email = user.getEmail();
+        int groupid = getIntent().getIntExtra("group_id", 0);
+
+        client = CustomHttpBuilder.SSL().build();
+
+        URL url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("weaweg.mywire.org")
+                .port(8080)
+                .addPathSegments("api/groups/" + groupid)
+                .addQueryParameter("email", email)
+                .build().url();
+
+        Log.d("url", url.toString());
+
+        //body = RequestBody.create("", null);
+
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
+                .delete()
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if(!repeat)deleteUser(true,position);
+                if(repeat)e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("statuscode",String.valueOf(response.code()));
+                Log.d("responsebody",response.body().string());
+
+                if(response.code()>=200 && response.code()<300)
+                {
+                    GroupManagementScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            users.remove(position);
+                            recyclerAdapter.setusers(users);
+                        }
+                    });
+
+                }
+
+                if(response.code()==409)
+                {
+                    GroupManagementScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(GroupManagementScreen.this, R.string.delete_user_failed,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+    public void getUsers(Boolean repeat)
+    {
         int groupid = getIntent().getIntExtra("group_id", 0);
         client = CustomHttpBuilder.SSL().build();
 
@@ -106,7 +239,7 @@ public class GroupManagementScreen extends AppCompatActivity implements GroupMan
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
+                if(!repeat)getUsers(true);
             }
 
             @Override
@@ -144,204 +277,10 @@ public class GroupManagementScreen extends AppCompatActivity implements GroupMan
 
             }
         });
-
-        //=================================end getting users===============================
-        recylerView = findViewById(R.id.rec_view_group_management);
-        recyclerAdapter = new Group_Management_Adapter(this);
-        recylerView.setLayoutManager(new LinearLayoutManager(this));
-        recylerView.setAdapter(recyclerAdapter);
-        recyclerAdapter.setusers(users);
-        //=========================add_member==============================
-        member = findViewById(R.id.edit_text_new_member);
-        addMember = findViewById(R.id.button_add_member);
-
-        addMember.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = member.getText().toString();
-                //=========================connection==================================
-                int groupid = getIntent().getIntExtra("group_id", 0);
-                client = CustomHttpBuilder.SSL().build();
-
-                URL url = new HttpUrl.Builder()
-                        .scheme("https")
-                        .host("weaweg.mywire.org")
-                        .port(8080)
-                        .addPathSegments("api/groups/" + groupid)
-                        .addQueryParameter("email", email)
-                        .build().url();
-
-                Log.d("url", url.toString());
-
-
-                //String urld = "https://weaweg.mywire.org:8080/api/groups/"+groupid+"?email="+email;
-               // Log.d("email",urld);
-                body = RequestBody.create("", null);
-
-                sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                request = new Request.Builder()
-                        .url(url)
-                        .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
-                        .post(body)
-                        .build();
-
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        Log.d("statuscode", String.valueOf(response.code()));
-                        //Log.d("body",response.body().string());
-
-                        if (response.code() >= 200 && response.code() < 300) {
-                            JSONObject json = null;
-                            try {
-                                json = new JSONObject(response.body().string());
-                                int id = json.getInt("user_id");
-                                String name = json.getString("name");
-                                String email = json.getString("email");
-                                users.add(new GroupUserModel(id, name,email));
-                                GroupManagementScreen.this.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        recyclerAdapter.setusers(users);
-                                        member.setText("");
-                                    }
-                                });
-
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
-                        if (response.code() == 400) {
-                            GroupManagementScreen.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(GroupManagementScreen.this, R.string.invalid_email, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        });
-
-
-        //======================tolbar========================================
-        Toolbar toolbar = findViewById(R.id.toolbar_management);
-        setSupportActionBar(toolbar);
-        String name = getIntent().getStringExtra("group_name");
-        getSupportActionBar().setTitle(name);
-        //===========================delete group=============================
-        deleteGroup = findViewById(R.id.button_delete_group);
-        deleteGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                buildDialogDelete();
-            }
-        });
     }
-
-    private void buildDialogDelete() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.do_you_want_delete_group).
-                setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        int groupid = getIntent().getIntExtra("group_id", 0);
-                        String GroupID = String.valueOf(groupid);
-                        client = CustomHttpBuilder.SSL().build();
-
-                        URL url = new HttpUrl.Builder()
-                                .scheme("https")
-                                .host("weaweg.mywire.org")
-                                .port(8080)
-                                .addPathSegments("api/groups")
-                                .addQueryParameter("groupId",GroupID)
-                                .build().url();
-
-
-                        Log.d("url", url.toString());
-
-                        //body = RequestBody.create("", null);
-
-                        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                        request = new Request.Builder()
-                                .url(url)
-                                .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
-                                .delete()
-                                .build();
-                        client.newCall(request).enqueue(new Callback() {
-                            @Override
-                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                Log.d("statuscode",String.valueOf(response.code()));
-                                GroupManagementScreen.this.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if(response.code()>=200 && response.code()<300)
-                                        {
-                                            sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-                                            if(groupid==sharedPreferences.getInt(group_id,0))
-                                            {
-                                                editor = sharedPreferences.edit();
-                                                editor.putString(group_code, "");
-                                                editor.putInt(group_id,0);
-                                                editor.commit();
-
-
-                                            }
-
-                                            finish();
-                                            finish();
-                                            startActivity(new Intent(GroupManagementScreen.this, GroupsScreen.class));
-
-
-                                        }
-
-                                        if(response.code()==403)
-                                        {
-                                            Toast.makeText(GroupManagementScreen.this, R.string.delete_group_failed,Toast.LENGTH_SHORT).show();
-
-                                        }
-
-                                    }
-                                });
-                            }
-                        });
-
-                    }
-                })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-        builder.create().show();
-
-    }
-
-    @Override
-    public void onDeleteUserClick(int position) {
-        GroupUserModel user = users.get(position);
-        Log.d("email",user.getEmail());
-
-
-        String email = user.getEmail();
+    public void adduser(Boolean repeat, String email)
+    {
         int groupid = getIntent().getIntExtra("group_id", 0);
-
-
         client = CustomHttpBuilder.SSL().build();
 
         URL url = new HttpUrl.Builder()
@@ -350,6 +289,81 @@ public class GroupManagementScreen extends AppCompatActivity implements GroupMan
                 .port(8080)
                 .addPathSegments("api/groups/" + groupid)
                 .addQueryParameter("email", email)
+                .build().url();
+
+        Log.d("url", url.toString());
+
+
+        //String urld = "https://weaweg.mywire.org:8080/api/groups/"+groupid+"?email="+email;
+        // Log.d("email",urld);
+        body = RequestBody.create("", null);
+
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if(!repeat)adduser(true,email);
+                if(repeat)e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("statuscode", String.valueOf(response.code()));
+                //Log.d("body",response.body().string());
+
+                if (response.code() >= 200 && response.code() < 300) {
+                    JSONObject json = null;
+                    try {
+                        json = new JSONObject(response.body().string());
+                        int id = json.getInt("user_id");
+                        String name = json.getString("name");
+                        String email = json.getString("email");
+                        users.add(new GroupUserModel(id, name,email));
+                        GroupManagementScreen.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                recyclerAdapter.setusers(users);
+                                member.setText("");
+                            }
+                        });
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                if (response.code() == 400) {
+                    GroupManagementScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(GroupManagementScreen.this, R.string.invalid_email, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public void deleteGroup(Boolean repeat)
+    {
+        int groupid = getIntent().getIntExtra("group_id", 0);
+        String GroupID = String.valueOf(groupid);
+        client = CustomHttpBuilder.SSL().build();
+
+        URL url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("weaweg.mywire.org")
+                .port(8080)
+                .addPathSegments("api/groups")
+                .addQueryParameter("groupId",GroupID)
                 .build().url();
 
         Log.d("url", url.toString());
@@ -365,40 +379,44 @@ public class GroupManagementScreen extends AppCompatActivity implements GroupMan
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
+                if(!repeat)deleteGroup(true);
+                if(repeat)e.printStackTrace();
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 Log.d("statuscode",String.valueOf(response.code()));
-                Log.d("responsebody",response.body().string());
+                GroupManagementScreen.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(response.code()>=200 && response.code()<300)
+                        {
+                            sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                            if(groupid==sharedPreferences.getInt(group_id,0))
+                            {
+                                editor = sharedPreferences.edit();
+                                editor.putString(group_code, "");
+                                editor.putInt(group_id,0);
+                                editor.commit();
 
-                if(response.code()>=200 && response.code()<300)
-                {
-                    GroupManagementScreen.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                        users.remove(position);
-                        recyclerAdapter.setusers(users);
+                            }
+
+                            finish();
+                            finish();
+                            startActivity(new Intent(GroupManagementScreen.this, GroupsScreen.class));
+
                         }
-                    });
 
-                }
+                        if(response.code()==403)
+                        {
+                            Toast.makeText(GroupManagementScreen.this, R.string.delete_group_failed,Toast.LENGTH_SHORT).show();
 
-                if(response.code()==409)
-                {
-                    GroupManagementScreen.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(GroupManagementScreen.this, R.string.delete_user_failed,Toast.LENGTH_SHORT).show();
                         }
-                    });
-                }
+
+                    }
+                });
             }
         });
-
-
     }
-    //public void
 
 }

@@ -2,6 +2,7 @@ package com.pz.zrobseliste.utils;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -13,7 +14,12 @@ import okhttp3.OkHttpClient;
 public class CustomHttpBuilder {
 
     public static OkHttpClient.Builder SSL() {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(500, TimeUnit.MILLISECONDS);
+                //.retryOnConnectionFailure(false);
+
 
         X509TrustManager TRUST_ALL_CERTS = new X509TrustManager() {
             @Override

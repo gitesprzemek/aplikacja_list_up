@@ -69,7 +69,10 @@ public class LoginScreen extends AppCompatActivity {
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String cookie = "cookie";
     public static final String useremail= "useremail";
-
+    public static final String group_code = "group_code";
+    public static final String group_id = "group_id";
+    public static final String listid = "listid";
+    public static final String listname = "listname";
 
 
 
@@ -95,7 +98,7 @@ public class LoginScreen extends AppCompatActivity {
 
         //===================================checking session==============================================
 
-        automaticlogin();
+        automaticlogin(false);
 
 
         //=========================logowanie============================================
@@ -113,108 +116,9 @@ public class LoginScreen extends AppCompatActivity {
         String login = loginField.getText().toString();
         this.user = new UserModel(login,passwordField.getText().toString());
         jsonObject = user.loginDatatoJSON();
+        login(false,login,jsonObject);
 
-
-            //===================================user login==============================================
-
-        OkHttpClient client = CustomHttpBuilder.SSL().build();
-
-            String url = "https://weaweg.mywire.org:8080/api/users/login";
-
-            RequestBody body = RequestBody.create(String.valueOf(jsonObject),JSON);
-
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(body)
-                    .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-
-                        LoginScreen.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                if(response.code()>=200 && response.code()<300) {
-                                    Log.d("logininfo",response.headers().toString());
-                                    sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-                                    editor = sharedPreferences.edit();
-                                    editor.putString(cookie,response.headers().get("Set-Cookie"));
-                                    editor.putString(useremail,login);
-                                    editor.commit();
-
-                                    Log.d("loginciasteczkoinfo",sharedPreferences.getString(cookie,""));
-                                    Toast.makeText(LoginScreen.this, R.string.login_successful,Toast.LENGTH_SHORT).show();
-                                }
-                                if(response.code()==418)
-                                {
-                                    Toast.makeText(LoginScreen.this, R.string.login_failed,Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    if(response.code()>=200 && response.code()<300) {
-                        startActivity(new Intent(LoginScreen.this, MainScreen.class));
-                    }
-                    }
-
-                });
-        //=====================================user data ===================================================
-        /*
-        client = new OkHttpClient().newBuilder()
-                .build();
-
-        url = "http://weaweg.mywire.org:8080/api/users/self";
-        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-        String sesja = sharedPreferences.getString(cookie,"");
-        Log.d("sesja",sesja);
-
-
-        request = new Request.Builder()
-                .url(url)
-                .addHeader("Cookie",sharedPreferences.getString(cookie,""))
-                .get()
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String status = "" + response.code();
-                Log.d("status polecenia",status);
-                if(response.code()>=200 & response.code()<300)
-                {
-                    Log.d("infookliencie",response.body().string());
-                    Log.d("moze tu cos bedzxie", response.headers().toString());
-                    Log.d("chuj","chuj");
-
-
-                }
-                else if(response.code()==401)
-                {
-                    LoginScreen.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(LoginScreen.this, R.string.session_time,Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-
-                }
-
-            }
-        });
-            */
-
-
+        //===================================user login==============================================
 
 
     }
@@ -236,7 +140,69 @@ public class LoginScreen extends AppCompatActivity {
         getBaseContext().getResources().getDisplayMetrics());
     }
 
-    public void automaticlogin()
+    public void login(Boolean repeat, String login,JSONObject jsonObject)
+    {
+        OkHttpClient client = CustomHttpBuilder.SSL().build();
+
+        String url = "https://weaweg.mywire.org:8080/api/users/login";
+
+        RequestBody body = RequestBody.create(String.valueOf(jsonObject),JSON);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if(!repeat)login(true,login,jsonObject);
+                if(repeat)e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+                LoginScreen.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(response.code()>=200 && response.code()<300) {
+                            sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                            editor = sharedPreferences.edit();
+                            if(!login.equals(sharedPreferences.getString(useremail,"")))
+                            {
+                                editor.putString(group_code,"");
+                                editor.putInt(group_id,0);
+                                editor.commit();
+                            }
+
+                            Log.d("logininfo",response.headers().toString());
+                            sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                            editor = sharedPreferences.edit();
+                            editor.putString(cookie,response.headers().get("Set-Cookie"));
+                            editor.putString(useremail,login);
+                            editor.commit();
+
+                            Log.d("loginciasteczkoinfo",sharedPreferences.getString(cookie,""));
+                            Toast.makeText(LoginScreen.this, R.string.login_successful,Toast.LENGTH_SHORT).show();
+
+                        }
+                        if(response.code()==418)
+                        {
+                            Toast.makeText(LoginScreen.this, R.string.login_failed,Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                if(response.code()>=200 && response.code()<300) {
+                    startActivity(new Intent(LoginScreen.this, MainScreen.class));
+                }
+            }
+
+        });
+    }
+
+    public void automaticlogin(Boolean repeat)
     {
         if(login_in) {
             OkHttpClient client = new OkHttpClient().newBuilder()
@@ -257,7 +223,8 @@ public class LoginScreen extends AppCompatActivity {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    e.printStackTrace();
+                    if(!repeat)automaticlogin(true);
+                    if(repeat)e.printStackTrace();
                 }
 
                 @Override

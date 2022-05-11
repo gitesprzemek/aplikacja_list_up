@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,72 +69,15 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
     public static final String group_id = "group_id";
     public static final String cookie = "cookie";
     public static final String useremail= "useremail";
+    public static final String listid = "listid";
+    public static final String listname = "listname";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups_screen);
 
-        //======================grupy http================================
 
-        client = CustomHttpBuilder.SSL().build();
-
-        URL url = new HttpUrl.Builder()
-                .scheme("https")
-                .host("weaweg.mywire.org")
-                .port(8080)
-                .addPathSegments("api/users/groups")
-                .build().url();
-
-        Log.d("url",url.toString());
-
-        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader("Cookie",sharedPreferences.getString(cookie,""))
-                .get()
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-
-                //Log.d("responebody",response.body().string());
-                Log.d("statuscode", String.valueOf(response.code()));
-                if (response.code() >= 200 && response.code() < 300) {
-
-                    try {
-                        JSONObject json;
-                        final JSONArray data = new JSONArray(response.body().string());
-                        for (int i = 0; i < data.length(); i++) {
-                            json = data.getJSONObject(i);
-                            int id = json.getInt("group_id");
-                            String name = json.getString("name");
-                            String group_id = returngroupcode(json.getString("name"));
-                            groups.add(new GroupModel(id, name, group_id));
-
-                        }
-                        GroupsScreen.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                groups_screen_adapter.setGroups(groups);
-                            }
-                        });
-                        Log.d("grupypoodpowiedzi",groups.toString());
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-                }
-            }
-        });
         //==========================grupy adapter===============================================
         groups = new ArrayList<>();
         Log.d("grupy",groups.toString());
@@ -142,7 +86,23 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(NUM_COLUMNS, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         recyclerView.setAdapter(groups_screen_adapter);
+        //========================grupy http================================
+        int count = 0;
+        while(true) {
+            try {
 
+                getGroups(false);
+                break;
+
+            } catch (java.net.SocketTimeoutException e) {
+                // handle exception
+                count++;
+                if (count == 3) Toast.makeText(GroupsScreen.this,R.string.loading_data,Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
+        //========================add_groups_button===========================
         add_group_button = findViewById(R.id.add_group_button);
         add_group_button.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -170,72 +130,8 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                 setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        client = CustomHttpBuilder.SSL().build();
-
-                        URL url = new HttpUrl.Builder()
-                                .scheme("https")
-                                .host("weaweg.mywire.org")
-                                .port(8080)
-                                .addPathSegments("api/groups")
-                                .addQueryParameter("name", name.getText().toString())
-                                .build().url();
-
-                        Log.d("url",url.toString());
-
-                        RequestBody body = RequestBody.create("",null);
-
-                        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-                        Request request = new Request.Builder()
-                                .url(url)
-                                .addHeader("Cookie",sharedPreferences.getString(cookie,""))
-                                .put(body)
-                                .build();
-
-                        client.newCall(request).enqueue(new Callback() {
-                            @Override
-                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                Log.d("statuscode",String.valueOf(response.code()));
-                                if(response.code()>=200 && response.code()<300)
-                                {
-                                    JSONObject json = null;
-                                    try {
-                                        json = new JSONObject(response.body().string());
-                                        int id = json.getInt("group_id");
-                                        String name = json.getString("name");
-                                        String group_code = returngroupcode(json.getString("name"));
-                                        groups.add(new GroupModel(id, name, group_code));
-                                        GroupsScreen.this.runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                groups_screen_adapter.setGroups(groups);
-                                            }
-                                        });
-
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                }
-
-                                if(response.code()==400)
-                                {
-                                    GroupsScreen.this.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(GroupsScreen.this, R.string.creating_group_failed,Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
+                        String name_group = name.getText().toString();
+                        addGroup(false, name_group);
                     }
 
                 })
@@ -308,61 +204,7 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                 setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-                        String email = sharedPreferences.getString(useremail,"");
-                        int id = group.getGroupID();
-                        client = CustomHttpBuilder.SSL().build();
-
-                        URL url = new HttpUrl.Builder()
-                                .scheme("https")
-                                .host("weaweg.mywire.org")
-                                .port(8080)
-                                .addPathSegments("api/groups/" + id)
-                                .addQueryParameter("email",email)
-                                .build().url();
-
-                        Log.d("url", url.toString());
-
-                        //body = RequestBody.create("", null);
-
-                        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                        Request request = new Request.Builder()
-                                .url(url)
-                                .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
-                                .delete()
-                                .build();
-                        client.newCall(request).enqueue(new Callback() {
-                            @Override
-                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                Log.d("statuscode",String.valueOf(response.code()));
-
-                                if(response.code()>=200 && response.code()<300)
-                                {
-                                    GroupsScreen.this.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            groups.remove(group);
-                                            groups_screen_adapter.setGroups(groups);
-                                        }
-                                    });
-
-                                }
-                                if(response.code()==409)
-                                {
-                                    GroupsScreen.this.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(GroupsScreen.this, R.string.owner_leave_group_failed,Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                        leaveGroup(false,group);
 
 
                     }
@@ -384,11 +226,11 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         editor = sharedPreferences.edit();
         editor.putString(group_code,group.getGroup_code());
         editor.putInt(group_id,group.getGroupID());
+        editor.putInt(listid,0);
+        editor.putString(listname,"");
         editor.commit();
-        Intent intent = new Intent(GroupsScreen.this,MainScreen.class);
-
         finish();
-        startActivity(intent);
+        startActivity(new Intent(GroupsScreen.this, MainScreen.class));
     }
 
     @Override
@@ -424,7 +266,217 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         popup.inflate(R.menu.popup_menu);
         popup.show();
     }
+    public void getGroups(Boolean repeat) throws SocketTimeoutException
+    {
 
+        client = CustomHttpBuilder.SSL().build();
+
+        URL url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("weaweg.mywire.org")
+                .port(8080)
+                .addPathSegments("api/users/groups")
+                .build().url();
+
+        Log.d("url",url.toString());
+
+        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie",sharedPreferences.getString(cookie,""))
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                try {
+                    Log.d("proba pobrania grup","probuje pobrac grupyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+                    if(!repeat)getGroups(true);
+                } catch (SocketTimeoutException socketTimeoutException) {
+                    socketTimeoutException.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+                //Log.d("responebody",response.body().string());
+                Log.d("statuscode", String.valueOf(response.code()));
+                if (response.code() >= 200 && response.code() < 300) {
+                    Log.d("proba pobrania grup","probuje pobrac grupyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+                    try {
+                        JSONObject json;
+                        final JSONArray data = new JSONArray(response.body().string());
+                        for (int i = 0; i < data.length(); i++) {
+                            json = data.getJSONObject(i);
+                            int id = json.getInt("group_id");
+                            String name = json.getString("name");
+                            String group_id = returngroupcode(json.getString("name"));
+                            groups.add(new GroupModel(id, name, group_id));
+
+                        }
+                        GroupsScreen.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                groups_screen_adapter.setGroups(groups);
+                            }
+                        });
+                        Log.d("grupypoodpowiedzi",groups.toString());
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            }
+        });
+
+    }
+
+    public void addGroup(Boolean repeat, String group_name)
+    {
+        client = CustomHttpBuilder.SSL().build();
+
+        URL url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("weaweg.mywire.org")
+                .port(8080)
+                .addPathSegments("api/groups")
+                .addQueryParameter("name", group_name)
+                .build().url();
+
+        Log.d("url",url.toString());
+
+        RequestBody body = RequestBody.create("",null);
+
+        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie",sharedPreferences.getString(cookie,""))
+                .put(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("pobieranie grup","niepowodzenie!!!!!!!!!!!!!!!!!!!!!!!");
+                if(!repeat)addGroup(true,group_name);
+                if(repeat)e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("statuscode",String.valueOf(response.code()));
+                if(response.code()>=200 && response.code()<300)
+                {
+                    JSONObject json = null;
+                    try {
+                        json = new JSONObject(response.body().string());
+                        int id = json.getInt("group_id");
+                        String name = json.getString("name");
+                        String group_code = returngroupcode(json.getString("name"));
+                        groups.add(new GroupModel(id, name, group_code));
+                        GroupsScreen.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                groups_screen_adapter.setGroups(groups);
+                            }
+                        });
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                if(response.code()==400)
+                {
+                    GroupsScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(GroupsScreen.this, R.string.creating_group_failed,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+    public void leaveGroup(Boolean repeat,GroupModel group)
+    {
+        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        String email = sharedPreferences.getString(useremail,"");
+        int id = group.getGroupID();
+        client = CustomHttpBuilder.SSL().build();
+
+        URL url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("weaweg.mywire.org")
+                .port(8080)
+                .addPathSegments("api/groups/" + id)
+                .addQueryParameter("email",email)
+                .build().url();
+
+        Log.d("url", url.toString());
+
+        //body = RequestBody.create("", null);
+
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
+                .delete()
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if(!repeat)leaveGroup(true,group);
+                if(repeat)e.printStackTrace();
+
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("statuscode",String.valueOf(response.code()));
+
+                if(response.code()>=200 && response.code()<300)
+                {
+                    GroupsScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                            if(id==sharedPreferences.getInt(group_id,0))
+                            {
+                                editor = sharedPreferences.edit();
+                                editor.putString(group_code, "");
+                                editor.putInt(group_id,0);
+                                editor.commit();
+
+                            }
+
+                            groups.remove(group);
+                            groups_screen_adapter.setGroups(groups);
+                        }
+                    });
+
+                }
+                if(response.code()==409)
+                {
+                    GroupsScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(GroupsScreen.this, R.string.owner_leave_group_failed,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+
+    }
 
 
 }

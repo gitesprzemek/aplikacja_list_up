@@ -60,8 +60,88 @@ public class TasksAsignmentScreen extends AppCompatActivity implements TaskAssig
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks_assignment);
-        //===========================recycler_view_users========================
+
+
+        //=======================recycler_view_users==========================
         users = new ArrayList<>();
+        recylerView = findViewById(R.id.rec_view_assignment_management);
+        recyclerAdapter = new Tasks_Assignment_Adapter(this);
+        recylerView.setLayoutManager(new LinearLayoutManager(this));
+        recylerView.setAdapter(recyclerAdapter);
+        recyclerAdapter.setusers(users);
+
+        //===========================get groups========================
+        getUsers(false);
+
+        //======================tolbar========================================
+        Toolbar toolbar = findViewById(R.id.toolbar_assignment);
+        setSupportActionBar(toolbar);
+
+    }
+
+
+    @Override
+    public void onAssignmentCardClick(int position) {
+
+        assignUser(false,position);
+
+    }
+
+    public void assignUser(Boolean repeat,int position)
+    {
+        GroupUserModel user = users.get(position);
+        client = CustomHttpBuilder.SSL().build();
+        String task_id = "" + getIntent().getIntExtra("task_id",0);
+        String user_id = "" + user.getId();
+
+        url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("weaweg.mywire.org")
+                .port(8080)
+                .addPathSegments("api/tasks/" + task_id)
+                .addQueryParameter("userId",user_id)
+                .build().url();
+
+        Log.d("user assigned url", String.valueOf(url));
+
+        body = RequestBody.create("", null);
+
+        request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("odpowiedz z serwera","nie udalo sie polaczyc z serwerem");
+                if(!repeat)assignUser(true,position);
+                if(repeat)e.printStackTrace();
+
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("response code assign user",String.valueOf(response.code()));
+                if (response.code() >= 200 && response.code() < 300) {
+                    Log.d("response body assing user",response.body().string());
+                    TasksAsignmentScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                            finish();
+                            startActivity(new Intent(TasksAsignmentScreen.this,MainScreen.class));
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+    public void getUsers(Boolean repeat)
+    {
         int groupid = getIntent().getIntExtra("group_id",0);
         client = CustomHttpBuilder.SSL().build();
 
@@ -86,7 +166,8 @@ public class TasksAsignmentScreen extends AppCompatActivity implements TaskAssig
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
+                if(!repeat)getUsers(true);
+                if(repeat)e.printStackTrace();
             }
 
             @Override
@@ -127,62 +208,7 @@ public class TasksAsignmentScreen extends AppCompatActivity implements TaskAssig
 
             }
         });
-        recylerView = findViewById(R.id.rec_view_assignment_management);
-        recyclerAdapter = new Tasks_Assignment_Adapter(this);
-        recylerView.setLayoutManager(new LinearLayoutManager(this));
-        recylerView.setAdapter(recyclerAdapter);
-        recyclerAdapter.setusers(users);
-
-        //======================tolbar========================================
-        Toolbar toolbar = findViewById(R.id.toolbar_assignment);
-        setSupportActionBar(toolbar);
-
     }
 
 
-    @Override
-    public void onAssignmentCardClick(int position) {
-        GroupUserModel user = users.get(position);
-        client = CustomHttpBuilder.SSL().build();
-        String task_id = "" + getIntent().getIntExtra("task_id",0);
-        String user_id = "" + user.getId();
-
-        url = new HttpUrl.Builder()
-                .scheme("https")
-                .host("weaweg.mywire.org")
-                .port(8080)
-                .addPathSegments("api/tasks/" + task_id)
-                .addQueryParameter("userId",user_id)
-                .build().url();
-
-        Log.d("user assigned url", String.valueOf(url));
-
-        body = RequestBody.create("", null);
-
-        request = new Request.Builder()
-                .url(url)
-                .addHeader("Cookie", sharedPreferences.getString(cookie, ""))
-                .post(body)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                //e.printStackTrace();
-                Log.d("odpowiedz z serwera","nie udalo sie polaczyc z serwerem");
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Log.d("response code assign user",String.valueOf(response.code()));
-                if (response.code() >= 200 && response.code() < 300) {
-                    Log.d("response body assing user",response.body().string());
-                }
-            }
-        });
-        finish();
-        finish();
-        startActivity(new Intent(TasksAsignmentScreen.this,MainScreen.class));
-
-    }
 }

@@ -50,4 +50,14 @@ public class ToDoModel {
     public void setAssigment(String assigment) {
         this.assigment = assigment;
     }
+
+    @Override
+    public String toString() {
+        return "ToDoModel{" +
+                "id=" + id +
+                ", status=" + status +
+                ", task='" + task + '\'' +
+                ", assigment='" + assigment + '\'' +
+                '}';
+    }
 }

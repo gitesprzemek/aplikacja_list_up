@@ -12,12 +12,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.pz.zrobseliste.R;
@@ -35,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,28 +85,21 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
 
         tasks_rec_view = findViewById(R.id.task_rec_view);
         tasks_rec_view.setLayoutManager(new LinearLayoutManager(this));
-        tasksAdapter = new All_Task_Screen_Adapter_Rec(this,this);
+        tasksAdapter = new All_Task_Screen_Adapter_Rec(this, taskList, this);
         tasks_rec_view.setAdapter(tasksAdapter);
+        //===================================================================================
+        int count = 0;
+        while (true){
+            try {
 
-        /*
-        for(int i=1;i<=6;i++)
-        {
-            ToDoModel1 task = new ToDoModel1();
-            task.setTask("Zadanie : " + i);
-            task.setStatus(true);
-            task.setId(i);
-            task.setGroup("GR" + i);
-            taskList.add(task);
-        }
-        ToDoModel1 task = new ToDoModel1();
-        task.setTask("ZadanieeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-        task.setStatus(false);
-        task.setId(7);
-        task.setGroup("GR" + 7);
-        taskList.add(task);
-           */
-        tasksAdapter.setTasks(taskList);
-        getTasks();
+                if(getTasks(false)==0) break;
+
+
+            } catch (java.net.SocketTimeoutException e) {
+                System.out.println("nie udalo sie pobrac danych");
+            }
+    }
+
         //---------------------menu------------------------------------------
         bottom_nav = findViewById(R.id.bottom_nav);
         bottom_nav.setOnNavigationItemSelectedListener(this);
@@ -150,8 +146,9 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
                 setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        taskList.removeIf(ToDoModel1::getStatus);
-                        tasksAdapter.setTasks(taskList);
+                        deleteAllSelected(false);
+
+
                     }
                 })
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -167,13 +164,37 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
 
     @Override
     public void handleDialogClose(DialogInterface dialog) {
-        getTasks();
+        new CountDownTimer(10, 10) {
+
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                int count = 0;
+                while(true) {
+                    try {
+
+                        getTasks(false);
+                        break;
+
+                    } catch (SocketTimeoutException e) {
+                        // handle exception
+                        if (++count == 3) Toast.makeText(AllTasksScreen.this,R.string.loading_data,Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+        }.start();
 
     }
 
     @Override
     public void deleteTask(int position) {
+        deleteTaskHelper(false,position);
 
+    }
+    public void deleteTaskHelper(Boolean repeat, int position)
+    {
         ToDoModel1 item = taskList.get(position);
         String id = "" + item.getId();
         client = CustomHttpBuilder.SSL().build();
@@ -197,7 +218,8 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
+                if(!repeat)deleteTaskHelper(true,position);
+                if(repeat)e.printStackTrace();
             }
 
             @Override
@@ -207,10 +229,12 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
                 if(response.code()>=200 && response.code()<300)
                 {
 
-                    taskList.remove(item);
+
                     AllTasksScreen.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+
+                            taskList.remove(item);
                             tasksAdapter.setTasks(taskList);
                         }
                     });
@@ -219,8 +243,8 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
             }
         });
     }
-    public void getTasks()
-    {
+
+    public int getTasks(Boolean powtorz) throws java.net.SocketTimeoutException {
         taskList = new ArrayList<>();
         client = CustomHttpBuilder.SSL().build();
         sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
@@ -244,7 +268,12 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    e.printStackTrace();
+                    try {
+                        Log.d("proba pobrania zadan", "probuje pobrac zadaniaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                        if(!powtorz)getTasks(true);
+                    } catch (SocketTimeoutException socketTimeoutException) {
+                        socketTimeoutException.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -254,9 +283,11 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
 
                     if(response.code()>= 200 && response.code()<300)
                     {
+                        Log.d("proba pobrania zadan", "probuje pobrac zadaniaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                         JSONObject json;
                         try {
                             final JSONArray data = new JSONArray(response.body().string());
+                            Log.d("zadania otrzymane z serwera",data.toString());
                             for (int i = 0; i < data.length(); i++) {
                                 json = data.getJSONObject(i);
                                 int id = json.getInt("task_id");
@@ -271,7 +302,9 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
                             AllTasksScreen.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.d("zadania do ustawienia na adapter",taskList.toString());
                                         tasksAdapter.setTasks(taskList);
+                                    Log.d("zadania po ustawieniu na adapter",taskList.toString());
 
                                 }
                             });
@@ -279,13 +312,59 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
                     }
 
 
                 }
             });
+        return 0;
 
 
+    }
 
+    public void deleteAllSelected(Boolean repeat)
+    {
+        client = CustomHttpBuilder.SSL().build();
+        sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+
+        URL url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("weaweg.mywire.org")
+                .port(8080)
+                .addPathSegments("api/users/doneTasks")
+                .build().url();
+
+        Log.d("url delete doneTasks",url.toString());
+
+        request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie",sharedPreferences.getString(cookie,""))
+                .delete()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if(!repeat)deleteAllSelected(true);
+                if(repeat)e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("response code", String.valueOf(response.code()));
+                Log.d("donetasks deleted response body",response.body().string());
+                if (response.code() >= 200 && response.code() < 300) {
+                    AllTasksScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            taskList.removeIf(ToDoModel1::getStatus);
+                            tasksAdapter.setTasks(taskList);
+                        }
+                    });
+
+                }
+            }
+        });
     }
 }
