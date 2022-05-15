@@ -473,6 +473,15 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
                         }
                     });
                 }
+                if(response.code()==404)
+                {
+                    GroupsScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(GroupsScreen.this, R.string.cannot_leave_group,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
 

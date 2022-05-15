@@ -93,13 +93,8 @@ public class LoginScreen extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("sharedPrefs",MODE_PRIVATE);
         login_in = sharedPreferences.getBoolean(checkboxstate,false);
-
         checkBox.setChecked(login_in);
-
-        //===================================checking session==============================================
-
         automaticlogin(false);
-
 
         //=========================logowanie============================================
         loginbutton = findViewById(R.id.loginbutton);
@@ -205,8 +200,7 @@ public class LoginScreen extends AppCompatActivity {
     public void automaticlogin(Boolean repeat)
     {
         if(login_in) {
-            OkHttpClient client = new OkHttpClient().newBuilder()
-                    .build();
+            OkHttpClient client = CustomHttpBuilder.SSL().build();
 
             String url = "https://weaweg.mywire.org:8080/api/users/self";
             sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);

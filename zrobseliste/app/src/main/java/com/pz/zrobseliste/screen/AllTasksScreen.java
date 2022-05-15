@@ -98,7 +98,7 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
             } catch (java.net.SocketTimeoutException e) {
                 System.out.println("nie udalo sie pobrac danych");
             }
-    }
+        }
 
         //---------------------menu------------------------------------------
         bottom_nav = findViewById(R.id.bottom_nav);
@@ -164,7 +164,7 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
 
     @Override
     public void handleDialogClose(DialogInterface dialog) {
-        new CountDownTimer(10, 10) {
+        new CountDownTimer(300, 300) {
 
             public void onTick(long millisUntilFinished) {
             }
@@ -239,6 +239,15 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
                         }
                     });
 
+                }
+                if(response.code()==404)
+                {
+                    AllTasksScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(AllTasksScreen.this,R.string.cannot_delete_task,Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });

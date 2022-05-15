@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -24,6 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.pz.zrobseliste.R;
 import com.pz.zrobseliste.interfaces.DialogCloseListener;
 import com.pz.zrobseliste.models.ToDoModel;
+import com.pz.zrobseliste.screen.AllTasksScreen;
 
 import java.io.IOException;
 import java.net.URL;
@@ -193,6 +195,7 @@ public class UpdateTask extends BottomSheetDialogFragment {
                 {
                     Log.d("resposne body update task",response.body().string());
                 }
+
             }
         });
 

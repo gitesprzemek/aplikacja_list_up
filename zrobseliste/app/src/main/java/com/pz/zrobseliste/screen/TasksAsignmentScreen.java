@@ -74,8 +74,10 @@ public class TasksAsignmentScreen extends AppCompatActivity implements TaskAssig
         getUsers(false);
 
         //======================tolbar========================================
+        String group_code = "" + getIntent().getStringExtra("group_code");
         Toolbar toolbar = findViewById(R.id.toolbar_assignment);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(group_code);
 
     }
 

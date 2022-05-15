@@ -68,4 +68,11 @@
     <string name="invalid_list_name">invalid list name</string>
     <string name="empty_list">cannot add task to empty list</string>
     <string name="loading_data">cannot load data, switch screens</string>
+    <string name="wrong_user">cannot find user</string>
+    <string name="cannot_delete_list">cannot delete list</string>
+    <string name="cannot_add_list_without_group">cannot add list without group</string>
+    <string name="cannot_delete_task">cannot delete task, refresh list</string>
+    <string name="cannot_update_task">cannot update task, refresh list</string>
+    <string name="cannot_leave_group">cannot leave group, refresh list</string>
+    <string name="cannot_delete_list_refresh">cannot delete list, refresh screen</string>
 </resources>

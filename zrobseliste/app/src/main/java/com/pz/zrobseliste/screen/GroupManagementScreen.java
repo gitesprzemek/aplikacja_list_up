@@ -348,6 +348,14 @@ public class GroupManagementScreen extends AppCompatActivity implements GroupMan
                         }
                     });
                 }
+                if (response.code() == 404) {
+                    GroupManagementScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(GroupManagementScreen.this, R.string.cannot_delete_list, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
     }

@@ -64,7 +64,14 @@
     <string name="delete_user_failed">nie mozna usunąc właściciela</string>
     <string name="delete_group_failed">tylko właściciel może usunąć grupe</string>
     <string name="owner_leave_group_failed">wlaściciel nie może opuścić grupy</string>
-    <string name="invalid_list_name">niewłaściwa nazwa grupy</string>
+    <string name="invalid_list_name">niewłaściwa nazwa listy</string>
     <string name="empty_list">nie mozna dodac zadania bez listy</string>
     <string name="loading_data">nie udalo sie wczytac danych, przelacz ekrany</string>
+    <string name="wrong_user">nie znaleziono uzytkownika</string>
+    <string name="cannot_delete_list">nie mozna usunac listy</string>
+    <string name="cannot_add_list_without_group">nie mozna dodac listy bez grupy</string>
+    <string name="cannot_delete_task">nie mozna usunac zadania, odswiez liste</string>
+    <string name="cannot_update_task">nie mozna edytowac zadania, odswiez liste</string>
+    <string name="cannot_leave_group">nie mozna opuscic grupy, odswiez liste</string>
+    <string name="cannot_delete_list_refresh">nie mozna usunac listy, odswiez ekran</string>
 </resources>

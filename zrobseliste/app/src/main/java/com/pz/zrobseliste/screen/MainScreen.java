@@ -191,7 +191,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
     @Override
     public void handleDialogClose(DialogInterface dialog)
     {
-        new CountDownTimer(10, 10) {
+        new CountDownTimer(300, 300) {
 
             public void onTick(long millisUntilFinished) {
             }
@@ -300,6 +300,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
         ToDoModel task = taskList.get(position);
         //intent.putExtra("group_name",sharedPreferences.getString());
         intent.putExtra("group_id",sharedPreferences.getInt(group_id,0));
+        intent.putExtra("group_code",sharedPreferences.getString(group_code,""));
         intent.putExtra("task_id",task.getId());
         if(sharedPreferences.getInt(group_id,0)!=0) {
             startActivity(intent);
@@ -358,6 +359,15 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
                     });
 
                 }
+                if(response.code()==404)
+                {
+                    MainScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainScreen.this,R.string.cannot_delete_task,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
     }
@@ -406,6 +416,15 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
                     finish();
                     startActivity(new Intent(MainScreen.this, MainScreen.class));
 
+                }
+                if(response.code()==404)
+                {
+                    MainScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainScreen.this, R.string.cannot_delete_list_refresh,Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });
@@ -708,7 +727,16 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
 
                         }
                     });
+                }
+                if(response.code() == 404)
+                {
+                    MainScreen.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainScreen.this, R.string.cannot_add_list_without_group,Toast.LENGTH_SHORT).show();
 
+                        }
+                    });
                 }
 
             }
