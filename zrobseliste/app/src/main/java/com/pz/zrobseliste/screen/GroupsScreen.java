@@ -1,5 +1,6 @@
 package com.pz.zrobseliste.screen;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.pz.zrobseliste.R;
@@ -63,6 +65,7 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
     BottomNavigationView bottom_nav;
     Button add_group_button;
     private OkHttpClient client;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String group_code = "group_code";
@@ -87,20 +90,8 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         recyclerView.setAdapter(groups_screen_adapter);
         //========================grupy http================================
-        int count = 0;
-        while(true) {
-            try {
 
-                getGroups(false);
-                break;
-
-            } catch (java.net.SocketTimeoutException e) {
-                // handle exception
-                count++;
-                if (count == 3) Toast.makeText(GroupsScreen.this,R.string.loading_data,Toast.LENGTH_SHORT).show();
-            }
-        }
-
+        getGroups(false);
 
         //========================add_groups_button===========================
         add_group_button = findViewById(R.id.add_group_button);
@@ -115,7 +106,17 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         bottom_nav = findViewById(R.id.bottom_nav);
         bottom_nav.setOnNavigationItemSelectedListener(this);
         bottom_nav.setSelectedItemId(R.id.nav_groups);
-
+        //===========================refreshing================================
+        swipeRefreshLayout = findViewById(R.id.swiperefreshgroup);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onRefresh() {
+                    getGroups(false);
+                    groups_screen_adapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
     }
 
@@ -266,9 +267,9 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         popup.inflate(R.menu.popup_menu);
         popup.show();
     }
-    public void getGroups(Boolean repeat) throws SocketTimeoutException
+    public void getGroups(Boolean repeat)
     {
-
+        groups = new ArrayList<>();
         client = CustomHttpBuilder.SSL().build();
 
         URL url = new HttpUrl.Builder()
@@ -290,12 +291,9 @@ public class GroupsScreen extends AppCompatActivity implements BottomNavigationV
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                try {
                     Log.d("proba pobrania grup","probuje pobrac grupyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
                     if(!repeat)getGroups(true);
-                } catch (SocketTimeoutException socketTimeoutException) {
-                    socketTimeoutException.printStackTrace();
-                }
+                    if(repeat)e.printStackTrace();
             }
 
             @Override

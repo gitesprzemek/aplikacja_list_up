@@ -1,5 +1,6 @@
 package com.pz.zrobseliste.screen;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import androidx.core.view.GestureDetectorCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.pz.zrobseliste.R;
@@ -81,6 +83,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String group_code = "group_code";
@@ -184,6 +187,17 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
             @Override
             public void onClick(View v) {
                 buildDialog();
+            }
+        });
+        //========================refresh===================================
+        swipeRefreshLayout = findViewById(R.id.swiperefreshmain);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onRefresh() {
+                getTasks(false);
+                tasksAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 

@@ -7,7 +7,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,7 +70,7 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
     ArrayAdapter<String> adapterItems;
     BottomNavigationView bottom_nav;
 
-
+    SwipeRefreshLayout swipeRefreshLayout;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
@@ -88,18 +90,7 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
         tasksAdapter = new All_Task_Screen_Adapter_Rec(this, taskList, this);
         tasks_rec_view.setAdapter(tasksAdapter);
         //===================================================================================
-        int count = 0;
-        while (true){
-            try {
-
-                if(getTasks(false)==0) break;
-
-
-            } catch (java.net.SocketTimeoutException e) {
-                System.out.println("nie udalo sie pobrac danych");
-            }
-        }
-
+        getTasks(false);
         //---------------------menu------------------------------------------
         bottom_nav = findViewById(R.id.bottom_nav);
         bottom_nav.setOnNavigationItemSelectedListener(this);
@@ -115,6 +106,17 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
         //============================================================================
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new AllTaskScreenItemTouch(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasks_rec_view);
+        //===========================refreshing=======================================
+        swipeRefreshLayout = findViewById(R.id.swiperefreshalltasks);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onRefresh() {
+                getTasks(false);
+                tasksAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
 
@@ -170,18 +172,7 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
             }
 
             public void onFinish() {
-                int count = 0;
-                while(true) {
-                    try {
-
                         getTasks(false);
-                        break;
-
-                    } catch (SocketTimeoutException e) {
-                        // handle exception
-                        if (++count == 3) Toast.makeText(AllTasksScreen.this,R.string.loading_data,Toast.LENGTH_SHORT).show();
-                    }
-                }
             }
 
         }.start();
@@ -253,7 +244,7 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
         });
     }
 
-    public int getTasks(Boolean powtorz) throws java.net.SocketTimeoutException {
+    public void getTasks(Boolean powtorz){
         taskList = new ArrayList<>();
         client = CustomHttpBuilder.SSL().build();
         sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
@@ -277,12 +268,10 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    try {
                         Log.d("proba pobrania zadan", "probuje pobrac zadaniaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                         if(!powtorz)getTasks(true);
-                    } catch (SocketTimeoutException socketTimeoutException) {
-                        socketTimeoutException.printStackTrace();
-                    }
+                        if(powtorz)e.printStackTrace();
+
                 }
 
                 @Override
@@ -327,7 +316,7 @@ public class AllTasksScreen extends AppCompatActivity implements BottomNavigatio
 
                 }
             });
-        return 0;
+
 
 
     }

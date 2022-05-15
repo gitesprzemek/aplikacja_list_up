@@ -10,6 +10,13 @@
     app:popupTheme="@style/PopupMenu"
     >
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefreshgroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_nav"
+        android:layout_marginBottom="70dp">
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/groups_rec_view"
         android:layout_width="match_parent"
@@ -17,10 +24,8 @@
         android:layout_above="@+id/bottom_nav"
         android:layout_marginBottom="70dp">
 
-
-
     </androidx.recyclerview.widget.RecyclerView>
-
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <Button
         android:id="@+id/add_group_button"
         android:layout_width="wrap_content"
