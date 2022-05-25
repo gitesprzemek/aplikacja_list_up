@@ -1,6 +1,7 @@
 package com.pz.zrobseliste.screen;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -103,6 +104,7 @@ public class RegistrationScreen extends AppCompatActivity {
 
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    Log.d("response code registration", String.valueOf(response.code()));
                     RegistrationScreen.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -113,7 +115,7 @@ public class RegistrationScreen extends AppCompatActivity {
                                 //informationView.setText(response.headers().toString());
                             }// 403 status jesli istnieje ktos o takim mailu
                             //400 bad request przy problemie z wprowadzanymi danymi
-                            else if(response.code()==403)
+                            else if(response.code()==409)
                             {
                                 Toast.makeText(RegistrationScreen.this, R.string.mail_already_existed,Toast.LENGTH_SHORT).show();
                                 //informationView.setText("nie udalo sie zarejestrowac");
