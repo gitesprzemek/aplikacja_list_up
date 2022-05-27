@@ -190,6 +190,7 @@ public class Main_Screen_Adapter_Rec extends RecyclerView.Adapter<Main_Screen_Ad
                 Log.d("status code : task status", String.valueOf(response.code()));
                 if(response.code()>=200 && response.code()<300)
                 {
+                    item.setStatus(true);
                     Log.d("resposne body status task", response.body().string());
                 }
             }
@@ -235,6 +236,7 @@ public class Main_Screen_Adapter_Rec extends RecyclerView.Adapter<Main_Screen_Ad
                 Log.d("status code : task status", String.valueOf(response.code()));
                 if(response.code()>=200 && response.code()<300)
                 {
+                    item.setStatus(false);
                     Log.d("resposne body status task", response.body().string());
                 }
             }

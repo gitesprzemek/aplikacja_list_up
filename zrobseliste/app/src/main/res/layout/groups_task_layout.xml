@@ -28,17 +28,17 @@
             />
 
         <TextView
+            android:id="@+id/text_view_person_assigned"
             android:layout_width="85dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:id="@+id/text_view_person_assigned"
-            android:textAlignment="center"
+            android:background="@drawable/btn_bg"
             android:padding="5dp"
             android:text="@string/assign"
-            android:background="@drawable/btn_bg"
-            android:textColor="@color/colorPrimaryDark"/>
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

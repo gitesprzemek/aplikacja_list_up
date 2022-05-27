@@ -501,7 +501,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
                                 }
                                 else
                                 {
-                                    assigment = "przypisz";
+                                    assigment = getResources().getString(R.string.assign);
                                 }
 
                                 taskList.add(new ToDoModel(id,status,name,assigment));

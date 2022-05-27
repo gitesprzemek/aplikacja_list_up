@@ -42,7 +42,7 @@
     <string name="delete_account">usuń konto</string>
     <string name="delete_account_text">Czy na pewno chcesz usunąć konto?</string>
     <string name="your_tasks">Twoje zadania</string>
-    <string name="assign">Przypisz</string>
+    <string name="assign">przypisz</string>
     <string name="list_name">nazwa listy</string>
     <string name="enter_list_name">Podaj nazwę listy</string>
     <string name="do_you_want_delete_list">Czy chcesz usunąć wybraną listę?</string>
@@ -74,4 +74,5 @@
     <string name="cannot_update_task">nie można edytować zadania, odśwież listę</string>
     <string name="cannot_leave_group">nie można opuścić grupy, odśwież listę</string>
     <string name="cannot_delete_list_refresh">nie mozna usunąć listy, odśwież ekran</string>
+    <string name="delete">usuń</string>
 </resources>

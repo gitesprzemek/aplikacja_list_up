@@ -75,4 +75,5 @@
     <string name="cannot_update_task">cannot update task, refresh list</string>
     <string name="cannot_leave_group">cannot leave group, refresh list</string>
     <string name="cannot_delete_list_refresh">cannot delete list, refresh screen</string>
+    <string name="delete">delete</string>
 </resources>

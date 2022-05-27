@@ -41,7 +41,6 @@ public class Group_Management_Adapter extends RecyclerView.Adapter<Group_Managem
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GroupUserModel user = users.get(position);
         holder.username.setText(user.getUsername());
-        holder.deluser.setText("usuń");
         holder.deluser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
