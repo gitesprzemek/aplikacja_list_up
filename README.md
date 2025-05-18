@@ -27,7 +27,7 @@ The full project documentation is available in the `Aplikacja mobilna “List_up
 ## ✨ Features
 - Create multiple task lists
 - Create groups with family members or friends to manage daily tasks, shopping or organize events
-- Add, edit, delete and assigning tasks
+- Add, edit, delete and assign tasks
 - Store data using SQLite
 - Intuitive user interface
 - Multiple screen support (Tasks, Main, Group. Menu)
