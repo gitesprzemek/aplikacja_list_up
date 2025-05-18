@@ -37,4 +37,5 @@ The full project documentation is available in the `Aplikacja mobilna “List_up
 The project is complete and released as open-source for learning and development purposes.
 ## 📜 License
 This project does not have an assigned license. Please contact the authors if you want to use or further develop the application.
-[Aplikacja mobilna “List_up”.pdf](https://github.com/gitesprzemek/aplikacja_list_up/files/9228761/Aplikacja.mobilna.List_up.pdf)
+[Aplikacja mobilna “List_up”.pdf](https://github.com/gitesprzemek/aplikacja_list_up/listup project website/Dokumentacja_LISTUP.pdf)
+
