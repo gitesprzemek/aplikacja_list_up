@@ -1,10 +1,12 @@
 # 📋 List_up – Task and List Management App
 **List_up** is a mobile application that allows users to create and manage task lists. It supports grouping tasks into categories, which helps with organizing plans and tracking progress.
 ## 🧰 Technologies
-- **Java** – main programming language
+- **Java** – main programming language for mobile app
+- **SpringBoot** - java framework used for the server
 - **Android SDK** – platform for building mobile applications, used in UI components
 - **HTML & CSS & JS** – used to create project website
-- **SQLite** – database for storing task and list data
+- **SQLite** – database for storing task and list data, hosted on the server
+- **REST API** - interface enabling communication between the mobile application and the backend server. Hosted on a physical machine alongside the database, it handles HTTP requests and responses, exchanging data in JSON format.
 ## 🗂️ Project Structure
 aplikacja_list_up/  
 ├── server/                         # Server components (if applicable)  
@@ -24,11 +26,11 @@ aplikacja_list_up/
 The full project documentation is available in the `Aplikacja mobilna “List_up”.pdf` file. It includes screen descriptions, app behavior, and design rationale.
 ## ✨ Features
 - Create multiple task lists
-- Group lists into categories
-- Add, edit, and delete tasks
+- Create groups with family members or friends to manage daily tasks, shopping or organize events
+- Add, edit, delete and assigning tasks
 - Store data using SQLite
 - Intuitive user interface
-- Multiple screen support (Main, Group, List)
+- Multiple screen support (Tasks, Main, Group. Menu)
 ## 👥 Authors
 - [gitesprzemek](https://github.com/gitesprzemek)
 - [mateuszsachajko](https://github.com/mateuszsachajko)
